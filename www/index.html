@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>Kali Terminal Maktabi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+:root{--bg:#eef2f8;--pn:#fff;--cd:#f2f5fb;--tx:#172033;--mu:#56667f;--ln:#d2dbe9;--ac:#1d5bcf;--ok:#12805c;--no:#c0392b;--wr:#8a5a00;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1320;--pn:#141c2d;--cd:#1b2539;--tx:#dbe4f4;--mu:#8d9db9;--ln:#26324b;--ac:#5b9bff;--ok:#3ec28f;--no:#ff7a6b;--wr:#f2b84b}}
+:root[data-theme="dark"]{--bg:#0d1320;--pn:#141c2d;--cd:#1b2539;--tx:#dbe4f4;--mu:#8d9db9;--ln:#26324b;--ac:#5b9bff;--ok:#3ec28f;--no:#ff7a6b;--wr:#f2b84b}
+html,body{height:100%;margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:.2em 0}
+h1{font-size:19px;font-weight:800;white-space:nowrap}
+.hd{display:flex;gap:12px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--ln);background:var(--pn);flex-wrap:wrap}
+.bar{flex:1;min-width:90px;max-width:220px;height:8px;background:var(--cd);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ac);transition:width .3s}
+.mu{color:var(--mu);font-size:13px}
+main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 6px minmax(0,1fr)}#gp{cursor:col-resize;background:var(--ln);touch-action:none}#gp:hover{background:var(--ac)}
+.L,.T{min-height:0;display:flex;flex-direction:column}
+.L{border-right:1px solid var(--ln)}
+.tabs{display:flex;gap:4px;padding:8px 12px 0;border-bottom:1px solid var(--ln);background:var(--pn)}
+.tabs button{border:0;background:none;color:var(--mu);font:600 14px inherit;font-family:inherit;padding:8px 14px;cursor:pointer;border-bottom:3px solid transparent}
+.tabs button.on{color:var(--ac);border-color:var(--ac)}
+#pane{flex:1;overflow:auto;padding:14px 16px}
+.b{border:1px solid var(--ln);background:var(--cd);color:var(--tx);border-radius:6px;padding:3px 10px;font:inherit;font-size:12.5px;cursor:pointer}
+.b:hover,.b.on{border-color:var(--ac);color:var(--ac)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.big{font-size:15px;padding:8px 18px;background:var(--ac);color:#fff;border-color:var(--ac)}
+.big:hover{color:#fff;opacity:.9}
+.in{width:100%;padding:8px 10px;border:1px solid var(--ln);border-radius:6px;background:var(--pn);color:var(--tx);font:inherit}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.cm{background:var(--pn);border:1px solid var(--ln);border-radius:8px;padding:12px 14px;margin-bottom:10px}
+.cm p{margin:4px 0 6px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nm{font:600 16px "JetBrains Mono",ui-monospace,monospace;color:var(--ac)}
+.ex{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
+code{background:var(--cd);padding:2px 7px;border-radius:4px;font:13px "JetBrains Mono",ui-monospace,monospace;word-break:break-all}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:10px 12px;border:1px solid var(--ln);border-radius:8px;background:var(--pn);color:var(--tx);font:inherit;cursor:pointer}
+.opt:hover{border-color:var(--ac)}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,var(--pn))}
+.opt.no{border-color:var(--no);background:color-mix(in srgb,var(--no) 18%,var(--pn))}
+.ch{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--ln);border-radius:8px;background:var(--pn);margin-bottom:8px}
+.ch.done{border-color:var(--ok)}
+.ch .mk{font-size:18px;line-height:1.2;color:var(--mu)}
+.ch.done .mk{color:var(--ok)}
+details summary{cursor:pointer;color:var(--mu);font-size:13px}
+.warn{border-left:4px solid var(--wr);background:var(--cd);padding:8px 12px;border-radius:0 6px 6px 0;font-size:13px;margin:0 0 12px}
+.T{background:var(--tb,#0a0f1a);color:var(--tf,#cfe3ff);font:13px/1.45 "JetBrains Mono",ui-monospace,monospace}
+.tb{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid #1d2a44;color:#8da2c6}
+.tb .b{background:#121b2e;border-color:#26324b;color:#cfe3ff}
+#tout{flex:1;overflow:auto;padding:12px;white-space:pre-wrap;word-break:break-word}
+.pl{color:#5b9bff}
+.er{color:#ff8e80}
+.inl{display:flex;gap:8px;padding:8px 12px;border-top:1px solid #1d2a44;align-items:center}
+.inl input{flex:1;min-width:0;background:transparent;border:0;color:inherit;font:inherit;outline:0}
+.mob{display:none}
+#toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:6px 14px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.s{opacity:1}
+@media(max-width:860px){
+main{display:flex}.L,.T{flex:1;width:100%}
+body[data-v="t"] .L{display:none}body:not([data-v="t"]) .T{display:none}
+.mob{display:inline-block}#gp{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+#rb{position:fixed;left:0;top:0;width:96px;z-index:60;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;will-change:transform}
+#rb[hidden]{display:none}
+#rb.g{cursor:grabbing}
+#rb .rbf{animation:rbob 3.2s ease-in-out infinite}
+#rb.g .rbf{animation:none;transform:rotate(-5deg) scale(1.07)}
+@keyframes rbob{50%{transform:translateY(-7px) rotate(1.5deg) scale(1.015)}}
+#rb svg{overflow:visible;display:block;width:100%;height:auto;filter:drop-shadow(0 8px 10px rgba(0,0,0,.28))}
+#rbE{filter:drop-shadow(0 0 2.5px #7df3ff);transition:transform .12s}
+.e,.sp,.pu{transform-box:fill-box;transform-origin:center}
+.e[data-e=idle],.e[data-e=flat]{animation:blink 4.5s infinite}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+.sp{animation:spin 1.1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pu{animation:pulse .8s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.18)}}
+.zz{animation:zz 2.4s ease-in-out infinite}
+@keyframes zz{0%{opacity:0;transform:translateY(6px)}50%{opacity:1}100%{opacity:0;transform:translateY(-6px)}}
+.tr{animation:tear 1.6s ease-in infinite}
+@keyframes tear{0%{opacity:0;transform:translateY(-4px)}30%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
+.rbb{position:absolute;width:max-content;max-width:min(230px,64vw);padding:8px 12px;border-radius:14px;background:var(--pn);color:var(--tx);border:1px solid var(--ln);font-size:13px;line-height:1.4;box-shadow:0 6px 18px rgba(0,0,0,.18);opacity:0;transform:translateY(4px) scale(.96);transition:opacity .2s,transform .2s;pointer-events:none}
+.rbb.s{opacity:1;transform:none}
+.rbb.up{bottom:100%;margin-bottom:4px}.rbb.dn{top:100%;margin-top:4px}
+.rbb.l{left:0}.rbb.r{right:0}
+.arm{transition:transform .4s cubic-bezier(.34,1.5,.64,1)}
+@keyframes sg{from{transform:rotate(calc(var(--s)*var(--amp)*-1deg))}to{transform:rotate(calc(var(--s)*var(--amp)*1deg))}}
+.rbhl{outline:3px solid #7df3ff!important;outline-offset:3px;border-radius:8px;animation:hl .7s ease-in-out infinite alternate}
+@keyframes hl{to{outline-color:transparent}}
+#rbc{position:fixed;left:0;top:0;width:22px;height:22px;margin:-2px 0 0 -2px;z-index:70;pointer-events:none;display:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))}
+body.rbg,body.rbg *{cursor:none!important}
+.pr{transition:transform .4s cubic-bezier(.34,1.5,.64,1)}
+#rb svg{transition:transform .25s}
+.cm.lk{opacity:.5;border-style:dashed;position:relative}
+.cm.lk::after{content:"\1F512";position:absolute;right:12px;top:10px;font-size:15px}
+.cm.lk input,.cm.lk button{pointer-events:none}
+#rbH{transform-origin:60px 84px}
+.an{transform-box:fill-box;transition:transform .45s cubic-bezier(.34,1.5,.64,1)}.anl{transform-origin:70% 90%}.anr{transform-origin:30% 90%}
+#rb:is([data-m=sad],[data-m=tired],[data-m=sick]) .anl{transform:rotate(-38deg) scaleY(.75)}
+#rb:is([data-m=sad],[data-m=tired],[data-m=sick]) .anr{transform:rotate(38deg) scaleY(.75)}
+#rb[data-m=think] .anr,#rb[data-m=sus] .anr{transform:rotate(30deg)}
+#rb:is([data-m=happy],[data-m=proud],[data-m=star],[data-m=love],[data-m=money]) .an{animation:anw .5s ease-in-out infinite alternate}
+@keyframes anw{to{transform:rotate(8deg)}}
+.em{transition:filter .2s}#rb.ty .em{filter:drop-shadow(0 0 5px #7df3ff);stroke:#7df3ff}
+#rb.nod #rbH{animation:nod .45s ease-in-out 3}@keyframes nod{50%{transform:translateY(7px)}}
+#rb.shk #rbH{animation:shk .3s ease-in-out 4}@keyframes shk{25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+#rb.jp .rbf{animation:jp .7s ease-out}@keyframes jp{40%{transform:translateY(-44px)}}
+#rb.fl .rbf{animation:fl .95s ease-in-out;transform-origin:50% 60%}@keyframes fl{0%{transform:none}50%{transform:translateY(-52px) rotate(180deg)}100%{transform:rotate(360deg)}}
+#rb.bw .rbf{animation:bw 1.6s ease-in-out;transform-origin:50% 100%}@keyframes bw{35%,65%{transform:rotate(20deg) translateY(6px)}}
+#rb.dc .rbf{animation:dc .5s ease-in-out infinite alternate;transform-origin:50% 100%}@keyframes dc{from{transform:rotate(-9deg)}to{transform:rotate(9deg) translateY(-12px)}}
+#rb.fit .rbf{animation:fit .45s ease-in-out infinite alternate;transform-origin:50% 100%}@keyframes fit{to{transform:translateY(9px) scaleY(.9)}}
+.rbd{position:absolute;width:max-content;max-width:min(280px,76vw);padding:8px 10px;border-radius:12px;background:#10261c;color:#e8fff0;border:3px solid #8a5a2b;box-shadow:0 6px 18px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s;display:flex;flex-wrap:wrap;gap:6px}
+.rbd.s{opacity:1}.rbd.up{bottom:100%;margin-bottom:4px}.rbd.dn{top:100%;margin-top:4px}.rbd.l{left:0}.rbd.r{right:0}
+.rbd .mu{width:100%;color:#a9d6bb;font-size:12px}
+.tk{display:flex;flex-direction:column;align-items:center;opacity:0;animation:tkin .4s forwards}
+.tk code{background:#0a1a12;color:inherit;border:1px solid currentColor}.tk i{font-size:10px;font-style:normal}
+.tk.b{color:#7df3ff}.tk.o{color:#ffc65a}.tk.g{color:#7dff9d}.tk.p{color:#ff8ad8}
+@keyframes tkin{from{opacity:0;transform:translateY(6px) scale(.8)}to{opacity:1;transform:none}}
+#rbp{position:fixed;top:54px;right:12px;z-index:80;width:230px;background:var(--pn);color:var(--tx);border:1px solid var(--ln);border-radius:12px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:7px}
+#rbp[hidden]{display:none}.rbsw{display:flex;gap:5px;flex-wrap:wrap}
+@media(max-width:860px){#rb{width:76px}}
+@media(prefers-reduced-motion:reduce){#rb .rbf,.e,.sp,.pu,.zz,.tr,.sw,.rbhl,#rb .rbf,#rb #rbH,.an,.tk{animation:none!important}.arm{transition:none!important}}
+</style>
+<style>
+#profileBtn{white-space:nowrap}#kmx-overlay{position:fixed;inset:0;background:#06101dcc;z-index:200;display:none;align-items:center;justify-content:center;padding:14px}#kmx-overlay.open{display:flex}#kmx-panel{width:min(760px,100%);max-height:90dvh;overflow:auto;background:var(--pn);color:var(--tx);border:1px solid var(--ln);border-radius:18px;padding:18px;box-shadow:0 24px 90px #0006}.kmx-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.kmx-stat,.kmx-box{background:var(--cd);border:1px solid var(--ln);border-radius:12px;padding:12px;min-width:0}.kmx-stat strong{display:block;font-size:23px;color:var(--ac)}.kmx-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.kmx-input{width:100%;min-width:0;padding:10px;border:1px solid var(--ln);border-radius:9px;background:var(--bg);color:var(--tx);font:inherit}.kmx-badges{display:flex;flex-wrap:wrap;gap:7px}.kmx-badge{padding:6px 9px;border:1px solid var(--ln);border-radius:99px;background:var(--bg);font-size:13px}.kmx-badge.locked{opacity:.45;filter:grayscale(1)}#kmx-suggest{position:fixed;z-index:90;display:none;max-width:min(420px,90vw);max-height:180px;overflow:auto;background:var(--pn);color:var(--tx);border:1px solid var(--ln);border-radius:9px;box-shadow:0 10px 24px #0004}#kmx-suggest button{display:block;width:100%;padding:8px 12px;text-align:left;border:0;background:transparent;color:inherit;font:13px monospace}#kmx-suggest button:hover{background:var(--cd)}.kmx-help{border:1px solid var(--ln);border-radius:10px;background:var(--cd);padding:10px;margin-top:8px;font-size:13px}.hd{position:sticky;top:0;z-index:30}
+@media(max-width:860px){body{min-height:100dvh;height:auto;overflow:auto}main{display:flex;flex-direction:column;min-height:0;overflow:visible}.L,.T{width:100%;min-height:380px;overflow:hidden}.L{border-right:0;border-bottom:1px solid var(--ln)}#gp{display:none}#pane{overflow:visible}.tabs{overflow-x:auto;flex-wrap:nowrap}.tabs button{white-space:nowrap;padding:8px 11px}.T{min-height:48dvh}#tout{min-height:200px}.hd{gap:6px;padding:8px}.hd h1{font-size:16px}.bar{max-width:80px;min-width:55px}.b{font-size:12px;padding:6px 8px}#kmx-panel{padding:13px}.kmx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:390px){.kmx-grid{grid-template-columns:1fr 1fr}.hd h1{white-space:normal;max-width:125px}}
+</style>
+<meta name="theme-color" content="#141c2d"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+#mnav,#qk{display:none}
+@media(max-width:860px){
+:root{padding:0!important;--tap:44px}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+.hd{position:static;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;scrollbar-width:none}
+.hd::-webkit-scrollbar{display:none}
+.hd>*{flex:none}
+.hd h1{font-size:16px;white-space:nowrap;max-width:none!important}
+.hd .bar{width:60px}
+#mv,.hd>.mu:last-child{display:none!important}
+main{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.L,.T{flex:1;min-height:0!important;width:100%;overflow:hidden;border:0}
+#pane{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:12px 12px 20px}
+.tabs{overflow-x:auto;padding:6px 8px 0;scrollbar-width:none}
+.tabs button{padding:12px 14px;min-height:var(--tap)}
+.b{min-height:38px;padding:7px 12px;font-size:13px;border-radius:8px}
+.cm{padding:12px}
+.cm .top{flex-wrap:wrap}
+.ex{gap:6px}.ex code{flex:1 1 100%}
+.ex .b{flex:1}
+.opt{padding:14px;font-size:15px;min-height:var(--tap)}
+.in,.kmx-input{font-size:16px;min-height:var(--tap)}
+.chips{flex-wrap:nowrap;overflow-x:auto;margin:10px -12px;padding:0 12px 4px;scrollbar-width:none}.chips .b{flex:none}
+.tb{padding:6px 10px;flex-wrap:wrap;gap:4px}.tb>span:first-child{font-size:12px}
+.tb .b{min-height:34px;padding:4px 9px}
+#tout{flex:1;min-height:0;-webkit-overflow-scrolling:touch}
+.inl{padding:6px 10px}.inl input{font-size:16px;min-height:40px}
+#qk{display:flex;gap:6px;overflow-x:auto;padding:6px 10px;border-top:1px solid #1d2a44;scrollbar-width:none}
+#qk button{flex:none;min-width:42px;min-height:38px;border:1px solid #26324b;background:#121b2e;color:#cfe3ff;border-radius:8px;font:600 14px "JetBrains Mono",monospace}
+#qk button:active{background:var(--ac)}
+#mnav{display:flex;flex:none;border-top:1px solid var(--ln);background:var(--pn);padding-bottom:env(safe-area-inset-bottom,0px)}
+#mnav button{flex:1;border:0;background:none;color:var(--mu);font:600 13px system-ui;padding:8px 0 7px;min-height:52px;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer}
+#mnav button span{font-size:20px;line-height:1}
+#mnav button.on{color:var(--ac)}
+#rb{width:64px!important}
+#toast{bottom:calc(70px + env(safe-area-inset-bottom,0px))}
+#kmx-overlay{padding:0;align-items:flex-end}
+#kmx-panel{width:100%;max-height:92dvh;border-radius:18px 18px 0 0}
+#rbp{top:auto;bottom:72px;right:8px}
+}
+@media(max-width:860px) and (max-height:480px){#mnav button{min-height:40px;flex-direction:row;justify-content:center;gap:8px}}
+</style>
+</head>
+<body data-v="l">
+<div class="hd">
+<h1>Kali Terminal Maktabi</h1>
+<div class="bar" title="Umumiy progress"><i id="pb"></i></div>
+<span class="mu" id="pt"></span>
+<span style="flex:1"></span>
+<button class="b mob" id="mv">Terminalga o'tish</button>
+<button class="b" id="ex">Progress kodi</button><button class="b" id="im">Yuklash</button><button class="b" id="th">Mavzu</button><button class="b" id="profileBtn">👤 Profil / XP</button>
+</div>
+<main>
+<section class="L">
+<div class="tabs" role="tablist"><button data-t="l" class="on">Darslar</button><button data-t="q">Test</button><button data-t="c">Mashqlar</button><button data-t="f">Kartalar</button></div>
+<div id="pane"></div>
+</section>
+<div id="gp" role="separator" aria-label="Oynalar chegarasi"></div><section class="T" id="tsec">
+<div class="tb"><span>kali@kali — simulyator</span><span><button class="b" id="tt">Rang</button> <button class="b" id="fm">A−</button> <button class="b" id="fp">A+</button> <button class="b" id="cs">Sessiya</button> <button class="b" id="clr">Tozalash</button></span></div>
+<div id="tout"></div>
+<div class="inl"><span class="pl" id="pp">└─$</span><input id="ti" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Terminal buyrug'i"></div>
+</section>
+</main>
+<div id="toast"></div>
+<div id="kmx-overlay" aria-hidden="true"><section id="kmx-panel" role="dialog" aria-modal="true" aria-label="Profil va natijalar"><div class="kmx-row" style="justify-content:space-between"><h2>O‘quvchi profili</h2><button class="b" id="kmx-close">✕ Yopish</button></div><div class="kmx-row"><div style="flex:1;min-width:180px"><label class="mu" for="kmx-name">Ismingiz</label><input id="kmx-name" class="kmx-input" maxlength="32" placeholder="Ismingizni kiriting"></div><div style="flex:1;min-width:180px"><label class="mu" for="kmx-goal">Kunlik maqsad</label><select id="kmx-goal" class="kmx-input"><option value="1">1 ta faoliyat</option><option value="3">3 ta faoliyat</option><option value="5">5 ta faoliyat</option></select></div></div><div class="kmx-grid" style="margin-top:12px"><div class="kmx-stat"><strong id="kmx-xp">0 XP</strong><span class="mu">Tajriba ballari</span></div><div class="kmx-stat"><strong id="kmx-level">1</strong><span class="mu">Daraja</span></div><div class="kmx-stat"><strong id="kmx-streak">0 kun</strong><span class="mu">Ketma-ket kunlar</span></div><div class="kmx-stat"><strong id="kmx-done">0</strong><span class="mu">Bajarilgan faoliyat</span></div><div class="kmx-stat"><strong id="kmx-best">0/15</strong><span class="mu">Test rekordi</span></div><div class="kmx-stat"><strong id="kmx-percent">0%</strong><span class="mu">Umumiy natija</span></div></div><div class="kmx-box" style="margin-top:12px"><div class="kmx-row" style="justify-content:space-between"><b>Kunlik maqsad</b><span id="kmx-goaltext" class="mu"></span></div><div class="bar" style="max-width:none;margin-top:8px"><i id="kmx-goalbar"></i></div></div><h3 style="margin-top:16px">🏅 Yutuqlar</h3><div class="kmx-badges" id="kmx-badges"></div><h3 style="margin-top:16px">Kurs yo‘nalishlari</h3><div class="kmx-grid"><div class="kmx-box"><b>🐧 Linux</b><p class="mu">Terminal, fayllar, ruxsatlar va jarayonlar.</p></div><div class="kmx-box"><b>🌐 Tarmoq</b><p class="mu">IP, DNS, ping va laboratoriya tarmog‘i.</p></div><div class="kmx-box"><b>🔐 Xavfsizlik</b><p class="mu">Ruxsatli laboratoriya va himoya asoslari.</p></div><div class="kmx-box"><b>⌨️ Bash</b><p class="mu">Buyruqlarni birlashtirish va skript mantiqi.</p></div><div class="kmx-box"><b>🐍 Python</b><p class="mu">Boshlang‘ich kod va avtomatlashtirish nazariyasi.</p></div><div class="kmx-box"><b>🧪 Web xavfsizligi</b><p class="mu">HTTP, cookie va xavfsiz test muhiti.</p></div></div><div class="kmx-help">Ma’lumotlar ushbu qurilma brauzerida saqlanadi. Brauzer ma’lumotlari tozalansa, JSON zaxiradan tiklang. Avtomatik sinxronlash server talab qiladi; bu versiyada Telegram bot va tashqi server yo‘q.</div><div class="kmx-row" style="margin-top:12px"><button class="b" id="kmx-export">⬇ JSON zaxira</button><button class="b" id="kmx-import">⬆ Zaxirani tiklash</button><input type="file" id="kmx-file" accept="application/json,.json" hidden><button class="b" id="kmx-reset">Progressni tozalash</button></div></section></div><div id="kmx-suggest" role="listbox"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const R=`Asoslar@@pwd@@Joriy papka yo'lini ko'rsatadi.@@pwd::qayerdaman?
+Asoslar@@ls@@Papka tarkibini ko'rsatadi. -l batafsil, -a yashirinlari bilan.@@ls::oddiy ro'yxat;;ls -la::yashirin fayllar bilan batafsil;;ls /etc::boshqa papka
+Asoslar@@cd@@Papkani o'zgartiradi. ".." — bir daraja yuqori, "~" — uy papkasi.@@cd Documents::Documents ga o'tish;;cd ..::yuqoriga;;cd ~::uyga qaytish
+Asoslar@@clear@@Terminal ekranini tozalaydi (Ctrl+L ham ishlaydi).@@clear::ekranni tozalash
+Asoslar@@echo@@Matnni chiqaradi. ">" faylni yangidan yozadi, ">>" oxiriga qo'shadi.@@echo Salom::matn chiqarish;;echo Salom > salom.txt::faylga yozish;;echo yana >> salom.txt::oxiriga qo'shish
+Asoslar@@history@@Avval kiritilgan buyruqlar tarixini ko'rsatadi.@@history::tarix
+Asoslar@@man@@Buyruq qo'llanmasini ochadi. Eng muhim yordam vositasi.@@man ls::ls haqida;;man grep::grep haqida
+Fayllar@@mkdir@@Yangi papka yaratadi. -p ichma-ich papkalar uchun.@@mkdir yangi::oddiy papka;;mkdir -p loyiha/hisobot::ichma-ich papka
+Fayllar@@touch@@Bo'sh fayl yaratadi yoki vaqt belgisini yangilaydi.@@touch fayl.txt::bo'sh fayl
+Fayllar@@cat@@Fayl ichini ekranga chiqaradi.@@cat notes.txt::eslatmalarni o'qish;;cat /etc/hosts::tizim fayli
+Fayllar@@cp@@Fayl nusxalaydi.@@cp notes.txt zaxira.txt::nusxa olish
+Fayllar@@mv@@Fayl ko'chiradi yoki nomini o'zgartiradi.@@mv zaxira.txt eski.txt::nomini o'zgartirish
+Fayllar@@rm@@Fayl o'chiradi. Qaytarib bo'lmaydi! "rm -rf /" kabi buyruqlardan ehtiyot bo'ling.@@rm eski.txt::faylni o'chirish;;rm -r yangi::papkani o'chirish
+Fayllar@@find@@Fayllarni nomi bo'yicha qidiradi.@@find / -name "hosts"::hosts faylini qidirish;;find . -name "*.txt"::joriy papkada .txt
+Fayllar@@head@@Faylning birinchi qatorlarini ko'rsatadi.@@head -n 2 /etc/passwd::dastlabki 2 qator
+Fayllar@@tail@@Faylning oxirgi qatorlarini ko'rsatadi (-f bilan jonli).@@tail -n 1 /etc/passwd::oxirgi qator
+Fayllar@@chmod@@Fayl ruxsatlarini o'zgartiradi (r=4, w=2, x=1).@@chmod +x skript.sh::bajariladigan qilish;;chmod 600 maxfiy.txt::faqat egasi o'qiy va yoza oladi
+Matn@@grep@@Fayldan namunaga mos qatorlarni qidiradi. -i harf farqisiz, -v teskari, -n qator raqami.@@grep nmap notes.txt::nmap bor qatorlar;;grep -n lab notes.txt::qator raqami bilan;;cat /etc/passwd | grep kali::quvur (pipe) bilan
+Matn@@wc@@Qator, so'z va bayt sonini sanaydi.@@wc -l notes.txt::qatorlar soni;;ls -a | wc -l::fayllar soni
+Matn@@sort@@Qatorlarni saralaydi.@@sort fayl.txt::alifbo tartibida
+Matn@@cut@@Qatordan ustunni kesib oladi.@@cut -d: -f1 /etc/passwd::foydalanuvchi nomlari
+Matn@@sed@@Oqim muharriri: matnni almashtiradi.@@sed 's/eski/yangi/g' fayl.txt::almashtirish
+Matn@@awk@@Ustunlar bilan ishlovchi kuchli til.@@awk '{print $1}' fayl.txt::1-ustun
+Tizim@@whoami@@Joriy foydalanuvchi nomi.@@whoami::kimman?;;sudo whoami::root sifatida
+Tizim@@id@@Foydalanuvchi va guruh identifikatorlari.@@id::UID va GID
+Tizim@@uname@@Tizim va yadro haqida ma'lumot.@@uname -a::to'liq ma'lumot
+Tizim@@hostname@@Kompyuter nomi.@@hostname::nom
+Tizim@@date@@Sana va vaqt.@@date::hozir
+Tizim@@df@@Disk bo'sh/band joyi.@@df -h::odam o'qiydigan birliklarda
+Tizim@@free@@Operativ xotira holati.@@free -h::RAM
+Tizim@@ps@@Jarayonlar ro'yxati.@@ps aux::barcha jarayonlar
+Tizim@@top@@Jarayonlarning jonli ro'yxati (q — chiqish).@@top::jonli ko'rinish
+Tizim@@kill@@Jarayonni to'xtatadi.@@kill 1234::PID bo'yicha
+Tizim@@sudo@@Buyruqni root huquqi bilan bajaradi.@@sudo apt update::root sifatida yangilash
+Tizim@@apt@@Dastur o'rnatadi, yangilaydi, o'chiradi.@@sudo apt update::ro'yxatni yangilash;;sudo apt install nmap::nmap o'rnatish
+Tarmoq@@ip@@Tarmoq interfeyslari va marshrutlar (ifconfig o'rnini bosgan).@@ip -br addr::IP manzillar;;ip route::marshrutlar
+Tarmoq@@ping@@Boshqa kompyuter javob berishini tekshiradi.@@ping -c 4 192.168.56.1::4 ta paket
+Tarmoq@@dig@@DNS ma'lumotini so'raydi.@@dig example.com::A yozuvi
+Tarmoq@@ss@@Ochiq portlar va ulanishlar.@@ss -tuln::tinglanayotgan portlar
+Tarmoq@@traceroute@@Paket yo'lini ko'rsatadi.@@traceroute example.com::marshrut
+Tarmoq@@curl@@URL dan ma'lumot oladi (HTTP sarlavhalari uchun -I).@@curl -I https://example.com::sarlavhalar
+Tarmoq@@wget@@Fayl yuklab oladi.@@wget https://example.com/fayl.zip::yuklash
+Tarmoq@@ssh@@Masofaviy kompyuterga xavfsiz ulanish.@@ssh ali@192.168.56.101::serverga kirish
+Tor@@systemctl@@Xizmatlarni boshqaradi (Kali'da Tor xizmati uchun).@@sudo systemctl status tor@default::Tor holati;;sudo systemctl enable --now tor::Tor ni yoqish
+Tor@@torsocks@@Istalgan dasturni Tor orqali ishga tushiradi.@@torsocks curl https://check.torproject.org/api/ip::Tor orqali IP tekshirish
+Tor@@proxychains4@@Dasturni proksi zanjiri (Tor SOCKS5 127.0.0.1:9050) orqali ishlatadi.@@proxychains4 curl https://check.torproject.org/api/ip::zanjir orqali
+Pentest (lab)@@nmap@@Port va xizmat skaneri. FAQAT o'z laboratoriyangizda yoki yozma ruxsat bilan!@@nmap -sn 192.168.56.0/24::lab tarmog'ida qurilmalar;;nmap -sT -p 22,80,443 192.168.56.101::tanlangan portlar;;nmap -sV -p 22,80 192.168.56.101::xizmat versiyalari
+Pentest (lab)@@tcpdump@@Paketlarni kuzatadi (faqat o'z interfeysingizda).@@sudo tcpdump -i lo -c 20::20 ta paket
+Pentest (lab)@@whatweb@@Web serverdagi texnologiyalarni aniqlaydi (faqat lab).@@whatweb http://192.168.56.101::lab serveri
+Pentest (lab)@@sha256sum@@Fayl xeshi: dalil o'zgarmaganini tekshirish uchun.@@sha256sum notes.txt::xesh
+Matn@@uniq@@Ketma-ket takrorlarni olib tashlaydi (sort bilan).@@sort fayl.txt | uniq::takrorsiz;;sort fayl.txt | uniq -c::sanash
+Matn@@tr@@Belgilarni almashtiradi.@@echo salom | tr a-z A-Z::katta harf
+Matn@@tee@@Chiqishni ekran va faylga yozadi.@@ls | tee royxat.txt::ikkalasiga
+Matn@@xargs@@Kirishdan argument tuzib buyruq bajaradi.@@find . -name "*.tmp" | xargs rm::topilganlarni o'chirish
+Fayllar@@tar@@Arxiv yaratadi yoki ochadi.@@tar -czvf arxiv.tar.gz papka/::siqish;;tar -xzvf arxiv.tar.gz::ochish
+Fayllar@@chown@@Fayl egasini o'zgartiradi.@@sudo chown kali fayl.txt::egasi kali
+Fayllar@@du@@Papka hajmini ko'rsatadi.@@du -sh .::umumiy hajm
+Fayllar@@ln@@Havola yaratadi.@@ln -s /etc/hosts hosts_link::ramziy havola
+Fayllar@@rsync@@Fayllarni tez sinxronlaydi (zaxira).@@rsync -av papka/ zaxira/::zaxira
+Fayllar@@locate@@Fayllarni baza bo'yicha tez topadi.@@locate passwd::qidirish
+Tizim@@uptime@@Tizim qancha ishlayotganini ko'rsatadi.@@uptime -p::qulay shakl
+Tizim@@crontab@@Takrorlanuvchi vazifalar jadvali.@@crontab -l::ro'yxat;;crontab -e::tahrirlash
+Tizim@@nohup@@Terminal yopilsa ham ishlaydigan buyruq.@@nohup python3 bot.py &::fonda
+Tizim@@useradd@@Yangi foydalanuvchi yaratadi.@@sudo useradd -m ali::uy papkasi bilan
+Tizim@@passwd@@Parolni o'zgartiradi.@@passwd::o'z parolingiz
+Tizim@@alias@@Qisqa nom (taxallus) yaratadi.@@alias ll='ls -lah'::qisqartma
+Tarmoq@@scp@@SSH orqali xavfsiz fayl nusxalash.@@scp fayl.txt ali@192.168.56.101:/tmp/::yuborish
+Tarmoq@@nslookup@@DNS nom yechimini tekshiradi.@@nslookup example.com::domen IP
+Tarmoq@@mtr@@traceroute va ping birlashmasi.@@mtr -r -c 10 example.com::hisobot
+Tor@@torrc@@Tor sozlash fayli (/etc/tor/torrc).@@sudo nano /etc/tor/torrc::tahrirlash;;sudo tor --verify-config::sintaksis tekshiruvi
+Tor@@nyx@@Tor monitori (zanjirlar va trafik).@@nyx::monitor ochish
+Tor@@obfs4proxy@@Tor bloklangan joyda ko'prik (bridge) transporti.@@sudo apt install obfs4proxy::o'rnatish
+Tor@@mat2@@Fayldan metama'lumotni (GPS, muallif) tozalaydi.@@mat2 foto.jpg::tozalangan nusxa
+Tor@@exiftool@@Metama'lumotni ko'rsatadi.@@exiftool foto.jpg::ko'rish
+Pentest (lab)@@tshark@@Terminal paket tahlilchisi (Wireshark).@@tshark -D::interfeyslar
+Pentest (lab)@@openssl@@Shifrlash va xesh vositasi.@@openssl rand -hex 16::tasodifiy kalit
+Pentest (lab)@@script@@Terminal sessiyasini dalil uchun yozadi.@@script -a session.txt::yozishni boshlash`;
+const D=R.trim().split('\n').map(l=>{const[c,n,d,x]=l.split('@@');return{c,n,d,x:x.split(';;').map(s=>s.split('::'))}});
+D.push({c:"Ruxsatlar",n:"chmod",d:"Fayl va papka ruxsatlarini boshqaradi. Faqat o‘zingiz yaratgan laboratoriya fayllarida sinang.",x:[["chmod 600 notes.txt","faqat egasi o‘qiydi va yozadi"],["chmod 755 script.sh","egasi yozadi, boshqalar bajarishi mumkin"]]},{c:"Tarmoq",n:"ip addr",d:"Qurilmaning tarmoq interfeyslari va IP manzillarini ko‘rsatadi.",x:[["ip addr","IP manzillar"],["ip -br addr","ixcham ko‘rinish"]]},{c:"Tarmoq",n:"ping",d:"Tarmoqdagi manzilga ulanishni tekshiradi. Faqat o‘zingizga tegishli yoki ruxsatli muhitda ishlating.",x:[["ping -c 4 192.168.56.1","laboratoriya manziliga 4 so‘rov"]]},{c:"Bash",n:"Quvur (pipe)",d:"Bir buyruq natijasini boshqasiga uzatish g‘oyasi.",x:[["cat notes.txt","fayl matnini ko‘rish"],["grep nmap notes.txt","matndan so‘z qidirish"]]},{c:"Web xavfsizligi",n:"HTTP asoslari",d:"Brauzer va server HTTP so‘rovi/javobi orqali muloqot qiladi. Cookie va parollarni begona saytlardan yig‘mang.",x:[["man curl","HTTP vositasi bo‘yicha qo‘llanma"]]},{c:"Python",n:"Python bilan tanishuv",d:"Python — o‘qilishi oson dasturlash tili. Ushbu terminal Linux buyruqlarini simulyatsiya qiladi, Python kodini haqiqiy bajarmaydi.",x:[["echo Salom Python","matn chiqarish mantiqi"]]},{c:"Himoya",n:"Xavfsiz laboratoriya",d:"Tarmoq tekshiruvlarini faqat o‘z laboratoriyangizda yoki aniq yozma ruxsat bilan bajaring. Dastur haqiqiy tarmoqni skanerlamaydi.",x:[["ip -br addr","laboratoriya interfeysini ko‘rish"]]});
+
+const HQ=[
+["`rm -rf /` nima uchun juda xavfli?",["Butun tizimni o'chirishga urinadi","Faqat keshni tozalaydi","Faylni yashiradi","Hech narsa qilmaydi"],0,"rm qaytarib bo'lmaydigan o'chirish, -rf esa so'ramasdan ichma-ich o'chiradi."],
+["Tor orqali curl'da DNS ham Tor ichida hal bo'lishi uchun qaysi parametr kerak?",["--socks5-hostname","-I","-O","--tor"],0,"socks5h / --socks5-hostname DNS so'rovini ham proksi orqali yuboradi."],
+["Pentestni boshlashdan oldingi birinchi shart nima?",["Yozma ruxsat va aniq qamrov","Eng tez skaner","VPN yoqish","Root parol"],0,"Ruxsatsiz skanerlash qonunga xilof."],
+["`ls -la` dagi `-a` nimani bildiradi?",["Yashirin fayllarni ham ko'rsatish","Faqat papkalar","Teskari tartib","Rangsiz chiqish"],0,"-a — all, nuqta bilan boshlanuvchi fayllar ham chiqadi."],
+["`>>` belgisi nima qiladi?",["Faylning oxiriga qo'shadi","Faylni yangidan yozadi","Natijani keyingi buyruqqa uzatadi","Buyruqni to'xtatadi"],0,"> yangidan yozadi, >> oxiriga qo'shadi, | — uzatadi."],
+["Kali'dagi Tor xizmati standart SOCKS porti?",["9050","8080","22","443"],0,"tor demoni 127.0.0.1:9050 da SOCKS5 proksi ochadi."],
+["Tor Browser'ni qaysi foydalanuvchi bilan ochish kerak?",["Oddiy foydalanuvchi (root emas)","root","sudo bilan","Farqi yo'q"],0,"Tor Browser root bilan ishlamaydi va bu xavfsiz ham emas."],
+["Pentest laboratoriyasi uchun VirtualBox'da qaysi tarmoq xavfsiz?",["Host-only yoki Internal","Bridged","Hamma portlar ochiq NAT","Hech biri"],0,"Bridged laboratoriyani haqiqiy tarmoqqa chiqarib yuborishi mumkin."],
+["`chmod 600 maxfiy.txt` nimani beradi?",["Faqat egasi o'qiy va yoza oladi","Hamma bajara oladi","Hamma o'qiy oladi","Faylni o'chiradi"],0,"6 = r+w egasiga, 0 = boshqalarga hech narsa."],
+["`grep -v xato log.txt` natijasi?",["\"xato\" yo'q qatorlar","\"xato\" bor qatorlar","Versiya","Faqat soni"],0,"-v — invert, mos kelmagan qatorlar."],
+["`&&` operatori nima qiladi?",["Birinchisi muvaffaqiyatli bo'lsa, keyingisini bajaradi","Ikkalasini parallel bajaradi","Xatoni yashiradi","Fonda ishga tushiradi"],0,"A && B: B faqat A muvaffaqiyatli bo'lsa ishlaydi."],
+["Wireshark o'rnatgach nega foydalanuvchini wireshark guruhiga qo'shamiz?",["Root'siz paket yig'ish uchun","Tezlik uchun","Parolni yashirish uchun","Hech nega"],0,"Aks holda paket yig'ish uchun sudo kerak bo'ladi."],
+["Tor Browser'da 'New Identity' tezkor tugmasi?",["Ctrl+Shift+U","Ctrl+Shift+L","Ctrl+T","F5"],0,"U — yangi identifikatsiya, L — shu sayt uchun yangi zanjir."],
+["Anonim ishda faylni yuklashdan oldin nima qilish kerak?",["Metama'lumotni (mat2/exiftool) tozalash","Nomini qisqartirish","Hajmini oshirish","Hech narsa"],0,"Foto va PDF ichida GPS va muallif ismi bo'lishi mumkin."],
+["`dd` buyrug'ida nima xavfli?",["Noto'g'ri of= butun diskni o'chiradi","Faylni yashiradi","Parol so'raydi","Tarmoqni o'chiradi"],0,"Qurilma nomini (lsblk bilan) ikki marta tekshiring."],
+["Ruxsatsiz tizimni skanerlash nimaga olib kelishi mumkin?",["Jinoiy yoki ma'muriy javobgarlikka","Hech narsaga","Mukofotga","Faqat ogohlantirishga"],0,"Faqat o'zingiznikini yoki yozma ruxsatli tizimni tekshiring."],
+["`chmod +x skript.sh` nima qiladi?",["Faylni bajariladigan qiladi","O'chiradi","Nusxalaydi","Yashiradi"],0,"x — execute (bajarish) ruxsati."],
+["Snowflake yoki obfs4 (ko'priklar) nima uchun kerak?",["Tor bloklangan tarmoqda ulanish uchun","Tezlikni oshirish uchun","Fayl siqish uchun","Parol yaratish uchun"],0,"Ko'priklar Tor trafigini oddiy trafikka o'xshatadi."],
+["`ss -tuln` nimani ko'rsatadi?",["Tinglanayotgan portlar","Disk hajmini","Foydalanuvchilarni","RAM holatini"],0,"ss netstat o'rnini bosgan."],
+["Pentest hisobotida nima bo'lishi kerak?",["Dalil, xavf darajasi va tuzatish tavsiyasi","Faqat skrinshot","Faqat IP manzil","Parollar ro'yxati"],0,"Parol va tokenlar hisobotda keraksiz saqlanmaydi."]];
+const CH=[
+["pwd bilan qayerdaligingizni ko'ring",/^pwd$/,"pwd"],
+["Yashirin fayllar bilan batafsil ro'yxat oling",/^ls\s+-\w*a/,"ls -la"],
+["`mkdir -p` bilan ichma-ich papka yarating",/^mkdir\s+-p\s+\S+\/\S+/,"mkdir -p loyiha/hisobot"],
+["echo bilan faylga matn yozing",/^echo\s+.+>\s*\S+/,"echo Salom > salom.txt"],
+["notes.txt faylini o'qing",/^cat\s+(\.\/|~\/)?notes\.txt/,"cat notes.txt"],
+["notes.txt ichidan \"nmap\" so'zini toping",/^grep\s+.*nmap/,"grep nmap notes.txt"],
+["IP manzillaringizni qisqa ko'rinishda chiqaring",/^ip\s+(-br\s+)?a/,"ip -br addr"],
+["Routerga 4 ta ping yuboring",/^ping\s+-c\s*4/,"ping -c 4 192.168.56.1"],
+["Tor xizmati holatini tekshiring",/systemctl\s+status\s+tor/,"sudo systemctl status tor@default"],
+["Tor orqali IP tekshiring",/socks5-hostname|torsocks/,"torsocks curl https://check.torproject.org/api/ip"],
+["Lab VM'dagi 22 va 80 portlarni skanerlang",/^nmap\s.*-p\s*22,80.*192\.168\.56\.|^nmap\s.*192\.168\.56\..*-p\s*22,80/,"nmap -sT -p 22,80 192.168.56.101"],
+["Faylga ruxsat bering: faqat egasi o'qiy olsin",/^chmod\s+600\s+\S+/,"chmod 600 notes.txt"],
+["&& bilan papka yarating va unga kiring",/^mkdir\s+\S+\s*&&\s*cd\s+\S+/,"mkdir test && cd test"],
+["/etc/passwd dan foydalanuvchi nomlarini kesib oling",/^cut\s+.*-f/,"cut -d: -f1 /etc/passwd"],
+["Lab VM'da xizmat versiyalarini aniqlang",/^nmap\s.*-sV.*192\.168\.56\./,"nmap -sV -p 22,80 192.168.56.101"],
+["Mini-hisobot: lab natijasini hisobot fayliga qo'shing",/>>\s*\S*hisobot/,"nmap -sT -p 22,80 192.168.56.101 >> hisobot.txt"],
+["Tashqi manzilni skanerlashga urinib ko'ring: simulyator nima deydi?",/^nmap\s+8\.8\.8\.8/,"nmap 8.8.8.8"]];
+let S={l:[],q:0,c:[]};try{S=Object.assign(S,JSON.parse(localStorage.getItem('kms')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('kms',JSON.stringify(S))}catch(e){}};
+const pane=$('#pane');let tab='l',cat='Hammasi',qry='';
+function prog(){const t=D.length+CH.length,n=S.l.length+S.c.length;$('#pb').style.width=100*n/t+'%';$('#pt').textContent=`Darslar ${S.l.length}/${D.length} · Mashqlar ${S.c.length}/${CH.length}`}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('s');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('s'),1400)}
+function copy(s){const ok=()=>toast('Nusxalandi');if(navigator.clipboard)navigator.clipboard.writeText(s).then(ok,fb);else fb();function fb(){const a=document.createElement('textarea');a.value=s;document.body.appendChild(a);a.select();try{document.execCommand('copy');ok()}catch(e){}a.remove()}}
+function card(x){return `<div class="cm"><div class="top"><span class="nm">${esc(x.n)}</span><label class="mu"><input type="checkbox" data-l="${esc(x.n)}" ${S.l.includes(x.n)?'checked':''}> o'rgandim</label></div><p>${esc(x.d)}</p>${x.x.map(([c,n])=>`<div class="ex"><code>${esc(c)}</code><span class="mu">${esc(n)}</span><button class="b" data-cp="${esc(c)}">Nusxa</button><button class="b" data-run="${esc(c)}">▶ Terminalda</button></div>`).join('')}</div>`}
+function list(){const q=qry.toLowerCase();const L=D.filter(x=>(cat=='Hammasi'||x.c==cat)&&(x.n+' '+x.d).toLowerCase().includes(q));$('#list').innerHTML=L.map(card).join('')||'<p class="mu">Hech narsa topilmadi. Boshqa so\'z yozing yoki "Hammasi" ni tanlang.</p>'}
+function lessons(){const cats=['Hammasi',...new Set(D.map(x=>x.c))];pane.innerHTML=dayBox()+`<p class="warn">Hamma buyruqlarni o'ng tomondagi simulyatorda sinang — u haqiqiy tizimga ta'sir qilmaydi. Pentest buyruqlari faqat o'z laboratoriyangiz yoki yozma ruxsat bilan.</p><input id="sq" class="in" placeholder="Buyruq yoki izoh bo'yicha qidiring…" value="${esc(qry)}"><div class="chips">${cats.map(c=>`<button class="b ${c==cat?'on':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('')}</div><div id="list"></div>`;list()}
+S.f=S.f||[];let FC=null,FB=false;{const td=Math.floor(Date.now()/864e5);S.st=S.st||{d:0,n:0};if(S.st.d!=td){S.st.n=S.st.d==td-1?S.st.n+1:1;S.st.d=td;save()}}
+function dayBox(){const n=Math.floor(Date.now()/864e5),x=D[n%D.length],t=S.l.length,lv=t<15?"Boshlang'ich":t<35?"O'rta":"Lab bosqichi";return `<div class="cm"><b>Bugungi buyruq: <span class="nm">${esc(x.n)}</span></b> <span class="mu">— ${esc(x.d)}</span><br><span class="mu">Daraja: ${lv} · ketma-ket kunlar: ${S.st.n}</span></div>`}
+function flash(){const pool=S.f.length&&Math.random()<.6?D.filter(x=>S.f.includes(x.n)):D;if(!FC)FC=pool[Math.floor(Math.random()*pool.length)];const x=FC,e=x.x[0][0];pane.innerHTML=`<h2>Flesh-kartalar</h2><p class="mu">Takrorlanadigan kartalar: ${S.f.length}. Avval javobni o'ylab ko'ring.</p><div class="cm"><p class="mu">${esc(x.c)}</p><h3>${esc(x.d)}</h3>${FB?`<div class="ex"><code>${esc(e)}</code><button class="b" data-cp="${esc(e)}">Nusxa</button><button class="b" data-run="${esc(e)}">▶ Terminalda</button></div><p>Buyruq: <b class="nm">${esc(x.n)}</b></p><button class="b" data-fk="1">Bilaman</button> <button class="b" data-fk="0">Takrorlash kerak</button>`:`<button class="b big" data-fl>Javobni ko'rsatish</button>`}</div>`}
+let Q=null;const sh=a=>[...a].sort(()=>Math.random()-.5);
+function mkQ(){const gen=sh(D.filter((x,i)=>!lockd(i))).slice(0,8).map(x=>({q:`"${x.d}" — bu qaysi buyruq?`,o:[x.n,...sh(D.filter(y=>y.n!=x.n)).slice(0,3).map(y=>y.n)],a:x.n,e:`To'g'ri javob: ${x.n}`}));const hq=sh(HQ).slice(0,15-gen.length).map(([q,o,a,e])=>({q,o,a:o[a],e}));return{qs:sh([...gen,...hq]),i:0,s:0,d:false}}
+function quiz(){if(!Q){pane.innerHTML=`<h2>Bilimingizni sinang</h2><p class="mu">15 ta savol: nazariya va buyruqlar. Eng yaxshi natija: ${S.q}/15</p><button class="b big" data-qs>Testni boshlash</button>`;return}
+if(Q.i>=Q.qs.length){S.q=Math.max(S.q,Q.s);save();const m=Q.s>=8?"Ajoyib natija!":Q.s>=5?"Yaxshi. Xatolaringizni darslardan takrorlang.":"Darslarni qayta ko'rib chiqing va yana urinib ko'ring.";pane.innerHTML=`<h2>Natija: ${Q.s}/${Q.qs.length}</h2><p>${m}</p><button class="b big" data-qs>Qayta topshirish</button>`;return}
+const q=Q.qs[Q.i];q.sh=q.sh||sh(q.o);pane.innerHTML=`<p class="mu">Savol ${Q.i+1}/${Q.qs.length} · to'g'ri javoblar: ${Q.s}</p><h3>${esc(q.q)}</h3>${q.sh.map(o=>`<button class="opt" data-o="${esc(o)}">${esc(o)}</button>`).join('')}<div id="fb"></div>`}
+function chal(){pane.innerHTML=`<h2>Terminal mashqlari</h2><p class="mu">Buyruqni o'ng tomondagi terminalga yozing — bajarilgach mashq o'zi belgilanadi.</p>`+CH.map((c,i)=>{const d=S.c.includes(i);return `<div class="ch ${d?'done':''}"><span class="mk">${d?'✔':'○'}</span><div><div>${esc(c[0])}</div><details><summary>Maslahat</summary><code>${esc(c[2])}</code> <button class="b" data-run="${esc(c[2])}">▶ Sinash</button></details></div></div>`}).join('')}
+function show(){document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t==tab));({l:lessons,q:quiz,c:chal,f:flash})[tab]();prog()}
+document.querySelector('.tabs').onclick=e=>{const t=e.target.dataset.t;if(t){tab=t;show()}};
+pane.addEventListener('input',e=>{if(e.target.id=='sq'){qry=e.target.value;list()}});
+pane.addEventListener('change',e=>{const n=e.target.dataset.l;if(n){const i=S.l.indexOf(n);i<0?S.l.push(n):S.l.splice(i,1);save();prog()}});
+pane.addEventListener('click',e=>{const t=e.target,d=t.dataset;
+if(d.cat){cat=d.cat;lessons()}
+else if(d.cp)copy(d.cp)
+else if(d.run!==undefined){document.body.dataset.v='t';sub(d.run)}
+else if('qs' in d){Q=mkQ();quiz()}
+else if(d.o!==undefined&&!Q.d){Q.d=true;const q=Q.qs[Q.i],ok=d.o==q.a;if(ok)Q.s++;pane.querySelectorAll('.opt').forEach(b=>{if(b.dataset.o==q.a)b.classList.add('ok');else if(b==t)b.classList.add('no')});$('#fb').innerHTML=`<p><b>${ok?"To'g'ri!":"Noto'g'ri."}</b> ${esc(q.e)}</p><button class="b big" data-nx>${Q.i+1<Q.qs.length?'Keyingisi':'Natijani ko\'rish'}</button>`}
+else if('nx' in d){Q.i++;Q.d=false;quiz()}
+else if('fl' in d){FB=true;flash()}
+else if(d.fk){S.f=S.f.filter(n=>n!=FC.n);if(d.fk=='0')S.f.push(FC.n);save();FC=null;FB=false;flash()}});
+$('#mv').onclick=()=>{const v=document.body.dataset.v=='t'?'l':'t';document.body.dataset.v=v;$('#mv').textContent=v=='t'?"Darslarga o'tish":"Terminalga o'tish";if(v=='t')$('#ti').focus()};
+$('#th').onclick=()=>{const r=document.documentElement,dk=r.dataset.theme?r.dataset.theme=='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=dk?'light':'dark'};
+/* ---- Terminal simulyatori ---- */
+const d=c=>({t:'d',c}),f=v=>({t:'f',v});
+let fs=d({home:d({kali:d({Desktop:d({}),Documents:d({}),lab:d({}),'notes.txt':f("Kali eslatmalari\nnmap faqat lab VM'da ishlatiladi\nlab manzili: 192.168.56.101\ntor xizmati: systemctl status tor\n"),'.bashrc':f('# bashrc')})}),etc:d({hosts:f('127.0.0.1\tlocalhost\n127.0.1.1\tkali'),passwd:f('root:x:0:0:root:/root:/usr/bin/zsh\nkali:x:1000:1000:Kali:/home/kali:/usr/bin/zsh')}),tmp:d({}),var:d({})});
+let cwd='/home/kali';const HS=[];
+const norm=p=>{p=p||'~';if(p=='~')p='/home/kali';else if(p.startsWith('~/'))p='/home/kali/'+p.slice(2);if(p[0]!='/')p=cwd+'/'+p;const o=[];p.split('/').forEach(s=>{if(!s||s=='.')return;s=='..'?o.pop():o.push(s)});return '/'+o.join('/')};
+const node=p=>{let n=fs;for(const s of norm(p).split('/').filter(Boolean)){if(!n||n.t!='d'||!(s in n.c))return null;n=n.c[s]}return n};
+const par=p=>{const x=norm(p),i=x.lastIndexOf('/');return[node(x.slice(0,i)||'/'),x.slice(i+1)]};
+const PS=()=>cwd=='/home/kali'?'~':cwd.replace('/home/kali','~');
+const rd=(p,inp)=>{const n=node(p);return n?(n.t=='f'?n.v:null):undefined};
+const txt=(ar,inp,c)=>{if(!ar.length)return inp||'';return ar.map(p=>{const n=node(p);return n?(n.t=='f'?n.v:`${c}: ${p}: bu papka`):`${c}: ${p}: fayl yoki papka yo'q`}).join('\n')};
+const NU=a=>{const i=a.indexOf('-n');let n=10;if(i>=0){n=+a[i+1]||10;a=a.filter((x,j)=>j!=i&&j!=i+1)}return[n,a.filter(x=>x[0]!='-')]};
+const PM={22:['open','ssh','OpenSSH 8.4p1'],80:['open','http','Apache httpd 2.4.54'],443:['closed','https',''],21:['closed','ftp','']};
+const md=(q,dd)=>{let m=q&&q.m;if(!m)return dd?'drwxr-xr-x':'-rw-r--r--';if(m=='+x')m='755';if(!/^\d{3}$/.test(m))return dd?'drwxr-xr-x':'-rwxr-xr-x';return (dd?'d':'-')+[...m].map(c=>'rwx'.split('').map((l,j)=>c&(4>>j)?l:'-').join('')).join('')};
+const lines=s=>s.replace(/\n$/,'').split('\n');
+const C={
+pwd:()=>cwd,
+ls:a=>{const fl=a.filter(x=>x[0]=='-').join(''),ar=a.filter(x=>x[0]!='-'),p=ar[0]||'.',n=node(p);if(!n)return `ls: '${p}' ga kirib bo'lmadi: fayl yoki papka yo'q`;if(n.t=='f')return p;let k=Object.keys(n.c).sort();k=fl.includes('a')?['.','..',...k]:k.filter(x=>x[0]!='.');const isd=x=>!n.c[x]||n.c[x].t=='d';return fl.includes('l')?k.map(x=>`${md(isd(x)?null:n.c[x],isd(x))} 1 kali kali ${String(isd(x)?4096:n.c[x].v.length).padStart(5)} ${x}${isd(x)?'/':''}`).join('\n'):k.map(x=>x+(isd(x)?'/':'')).join('  ')},
+cd:a=>{const p=a[0]||'~',n=node(p);if(!n)return `cd: ${p}: papka topilmadi`;if(n.t!='d')return `cd: ${p}: bu papka emas`;cwd=norm(p);return ''},
+echo:a=>a.filter(x=>x!='-n').join(' '),
+cat:(a,i)=>txt(a.filter(x=>x[0]!='-'),i,'cat').replace(/\n$/,''),
+head:(a,i)=>{const[n,ar]=NU(a);return lines(txt(ar,i,'head')).slice(0,n).join('\n')},
+tail:(a,i)=>{const[n,ar]=NU(a);return lines(txt(ar,i,'tail')).slice(-n).join('\n')},
+wc:(a,i)=>{const ar=a.filter(x=>x[0]!='-'),t=txt(ar,i,'wc'),l=t?t.replace(/\n$/,'').split('\n').length:0;return a.includes('-l')?String(l):`${l} ${t.split(/\s+/).filter(Boolean).length} ${t.length}`},
+sort:(a,i)=>lines(txt(a.filter(x=>x[0]!='-'),i,'sort')).sort().join('\n'),
+grep:(a,i)=>{const fl=a.filter(x=>x[0]=='-').join(''),ar=a.filter(x=>x[0]!='-');if(!ar.length)return "grep: namuna kiritilmagan";let re;try{re=new RegExp(ar[0],fl.includes('i')?'i':'')}catch(e){return 'grep: noto\'g\'ri ifoda'}const t=txt(ar.slice(1),i,'grep');return lines(t).map((l,j)=>[l,j+1]).filter(([l])=>re.test(l)!=fl.includes('v')).map(([l,j])=>fl.includes('n')?j+':'+l:l).join('\n')},
+mkdir:a=>{const p=a.includes('-p'),ar=a.filter(x=>x[0]!='-');if(!ar.length)return 'mkdir: operand yetishmayapti';let o='';ar.forEach(x=>{const fp=norm(x).split('/').filter(Boolean);let n=fs;fp.forEach((s,j)=>{if(!n)return;if(s in n.c){if(n.c[s].t!='d')n=null;else{if(j==fp.length-1&&!p)o+=`mkdir: '${x}' allaqachon mavjud\n`;n=n.c[s]}}else if(p||j==fp.length-1)n=n.c[s]=d({});else{o+=`mkdir: '${x}' yaratib bo'lmadi: oraliq papka yo'q (-p ishlating)\n`;n=null}})});return o.trim()},
+touch:a=>{a.filter(x=>x[0]!='-').forEach(x=>{const[p,n]=par(x);if(p&&p.t=='d'&&!(n in p.c))p.c[n]=f('')});return ''},
+rm:a=>{const r=a.some(x=>/^-\w*[rR]/.test(x));let o='';a.filter(x=>x[0]!='-').forEach(x=>{if(norm(x)=='/'){o+="rm: '/' ni o'chirish rad etildi. Haqiqiy tizimda `rm -rf /` hamma narsani yo'qotadi!\n";return}const n=node(x);if(!n){o+=`rm: '${x}' topilmadi\n`;return}if(n.t=='d'&&!r){o+=`rm: '${x}' papka (-r kerak)\n`;return}const[p,k]=par(x);delete p.c[k]});return o.trim()},
+cp:a=>cpmv(a,0),mv:a=>cpmv(a,1),
+find:a=>{const i=a.indexOf('-name'),pat=i>=0?a[i+1]:'*',re=new RegExp('^'+pat.replace(/[.+^${}()|\\]/g,'\\$&').replace(/\*/g,'.*').replace(/\?/g,'.')+'$'),st=a[0]&&a[0][0]!='-'?a[0]:'.',o=[];(function w(n,p){if(!n)return;if(re.test(p.split('/').pop()))o.push(p);if(n.t=='d')Object.keys(n.c).forEach(k=>w(n.c[k],(p=='/'?'':p)+'/'+k))})(node(st),st=='.'?'.':norm(st));return o.join('\n')},
+whoami:()=>'kali',id:()=>'uid=1000(kali) gid=1000(kali) groups=1000(kali),27(sudo),128(wireshark)',hostname:()=>'kali',
+uname:a=>a.includes('-a')?'Linux kali 6.12.0-kali1-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.12 x86_64 GNU/Linux':'Linux',
+date:()=>new Date().toString(),
+df:()=>'Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        80G   24G   53G  31% /',
+free:()=>'               total   used   free\nMem:           3.9Gi  1.2Gi  1.8Gi\nSwap:          1.0Gi     0B  1.0Gi',
+ps:()=>'USER   PID %CPU %MEM COMMAND\nroot     1  0.0  0.3 /sbin/init\ntor    612  0.1  1.2 /usr/bin/tor\nkali  1301  0.0  0.4 -zsh',
+history:()=>HS.map((h,i)=>String(i+1).padStart(4)+'  '+h).join('\n'),
+ip:a=>/route/.test(a[0])?'default via 192.168.56.1 dev eth0\n192.168.56.0/24 dev eth0 proto kernel scope link src 192.168.56.10':a.includes('-br')?'lo     UNKNOWN  127.0.0.1/8\neth0   UP       192.168.56.10/24':'1: lo: <LOOPBACK,UP> inet 127.0.0.1/8\n2: eth0: <BROADCAST,MULTICAST,UP> inet 192.168.56.10/24 brd 192.168.56.255',
+ping:a=>{const i=a.indexOf('-c'),n=i>=0?Math.min(+a[i+1]||4,10):4,h=a.filter((x,j)=>x[0]!='-'&&j!=i+1).pop();if(!h)return 'ping: manzil kiritilmagan';let o=`PING ${h} 56(84) bytes of data.\n`;for(let j=1;j<=n;j++)o+=`64 bytes from ${h}: icmp_seq=${j} ttl=64 time=${(Math.random()*.6+.2).toFixed(2)} ms\n`;return o+`\n--- ${h} ping statistics ---\n${n} packets transmitted, ${n} received, 0% packet loss`},
+nmap:a=>{const tg=a.filter(x=>/^\d+\.\d+\.\d+\.\d+(\/\d+)?$/.test(x)).pop();if(!tg)return 'nmap: nishon manzil kerak. Masalan: nmap -sT -p 22,80 192.168.56.101';if(!tg.startsWith('192.168.56.'))return "[LAB] Simulyatorda faqat 192.168.56.0/24 laboratoriya manzillari ruxsat.\nHaqiqiy hayotda faqat o'zingizga tegishli yoki yozma ruxsat berilgan tizimni skanerlang.";const h='Starting Nmap 7.95 ( https://nmap.org )\n';if(a.includes('-sn'))return h+'Nmap scan report for 192.168.56.1\nHost is up.\nNmap scan report for 192.168.56.101\nHost is up (0.00042s latency).\nNmap done: 256 IP addresses (2 hosts up)';const pi=a.indexOf('-p'),ps=pi>=0?a[pi+1].split(','):['22','80'],v=a.includes('-sV');return h+`Nmap scan report for ${tg}\nHost is up (0.00042s latency).\nPORT     STATE  SERVICE${v?' VERSION':''}\n`+ps.map(p=>{const m=PM[p]||['closed','unknown',''];return `${(p+'/tcp').padEnd(8)} ${m[0].padEnd(6)} ${m[1]}${v&&m[2]?' '+m[2]:''}`}).join('\n')+'\n\nNmap done: 1 IP address (1 host up) scanned in 0.21 seconds'},
+curl:a=>/socks5/.test(a.join(' '))?'{"IsTor":true,"IP":"185.220.101.34"}':a.includes('-I')?'HTTP/2 200\ncontent-type: text/html\nserver: ECS':'<!doctype html><html><head><title>Example Domain</title>...',
+torsocks:a=>a[0]?'[torsocks] Tor orqali bajarildi\n'+exec(a):'torsocks: buyruq kerak',
+proxychains4:a=>a[0]?'[proxychains] socks5 127.0.0.1:9050\n'+exec(a):'proxychains4: buyruq kerak',
+systemctl:a=>/status/.test(a[0])?'● tor@default.service - Anonymizing overlay network for TCP\n   Active: active (running)\n   Bootstrapped 100% (done): Done':'(simulyator) ' +a.join(' ')+' — bajarildi',
+apt:a=>a[0]=='update'?'Hit:1 http://http.kali.org/kali kali-rolling InRelease\nReading package lists... Done':a[0]=='install'?`Reading package lists... Done\n${a.slice(1).join(', ')} o'rnatildi (simulyatsiya)`:'apt: update | install | remove',
+sha256sum:a=>a[0]&&node(a[0])?'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  '+a[0]:'sha256sum: fayl topilmadi',
+chmod:a=>{const[m,p]=a,n=p&&node(p);if(!n)return `chmod: '${p||''}' topilmadi`;n.m=m;return ''},
+cut:(a,i)=>{const dl=(a.find(x=>x.startsWith('-d'))||'-d\t').slice(2),fi=+(a.find(x=>x.startsWith('-f'))||'-f1').slice(2);return lines(txt(a.filter(x=>x[0]!='-'),i,'cut')).map(l=>l.split(dl)[fi-1]||'').join('\n')},
+uniq:(a,i)=>{const c=a.includes('-c'),r=[];lines(txt(a.filter(x=>x[0]!='-'),i,'uniq')).forEach(l=>{const q=r[r.length-1];q&&q[1]==l?q[0]++:r.push([1,l])});return r.map(([n,l])=>c?String(n).padStart(4)+' '+l:l).join('\n')},
+sed:(a,i)=>{const m=(a[0]||'').match(/^s\/(.*?)\/(.*?)\/(g?)$/);if(!m)return "sed: simulyatorda faqat 's/eski/yangi/g' shakli";const re=new RegExp(m[1],m[3]);return lines(txt(a.slice(1),i,'sed')).map(l=>l.replace(re,m[2])).join('\n')},
+awk:(a,i)=>{const m=(a[0]||'').match(/\$(\d)/);return lines(txt(a.slice(1),i,'awk')).map(l=>m?l.split(/\s+/)[m[1]-1]||'':l).join('\n')},
+du:()=>'4.0K\t.',uptime:a=>a.includes('-p')?'up 2 hours, 14 minutes':' 12:00:01 up 2:14,  1 user,  load average: 0.08, 0.04, 0.01',
+ss:()=>'Netid State  Local Address:Port\ntcp   LISTEN 127.0.0.1:9050\ntcp   LISTEN 0.0.0.0:22',
+dig:a=>`;; ANSWER SECTION:\n${a.filter(x=>x[0]!='-')[0]||'example.com'}.  300 IN A 93.184.216.34`,
+traceroute:a=>`traceroute to ${a.filter(x=>x[0]!='-')[0]||''}\n 1  192.168.56.1  0.4 ms\n 2  10.0.0.1  2.1 ms\n 3  * * *`,
+tar:a=>a.join(' ').includes('-c')?'arxiv yaratildi (simulyatsiya)':'arxiv ochildi (simulyatsiya)',
+man:a=>{const x=D.find(y=>y.n==a[0]);return x?`${x.n.toUpperCase()}(1)\n\n${x.d}\n\nMISOLLAR\n`+x.x.map(([c,n])=>`  ${c}   # ${n}`).join('\n'):a[0]?`man: '${a[0]}' uchun qo'llanma yo'q`:'Qaysi qo\'llanma kerak? Masalan: man ls'},
+which:a=>a[0]?'/usr/bin/'+a[0]:'',
+help:()=>"Bu o'quv simulyatori. Ishlaydigan buyruqlar:\n"+Object.keys(C).join(', ')+"\n\nTab — to'ldirish, ↑/↓ — tarix. Boshqa buyruqlar uchun izoh chiqadi.",
+};
+function cpmv(a,m){const ar=a.filter(x=>x[0]!='-');if(ar.length<2)return 'operand yetishmayapti';const s=node(ar[0]);if(!s)return `${ar[0]}: fayl topilmadi`;if(s.t!='f')return 'faqat fayllar (simulyator)';let dn=node(ar[1]),[p,k]=dn&&dn.t=='d'?[dn,ar[0].split('/').pop()]:par(ar[1]);if(!p)return 'manzil topilmadi';p.c[k]=f(s.v);if(m){const[q,n]=par(ar[0]);delete q.c[n]}return ''}
+function exec(t,inp){let c=t[0],a=t.slice(1);if(c=='sudo'){if(!a.length)return 'sudo: buyruq kerak';if(a[0]=='whoami')return 'root';return exec(a,inp)}
+if(C[c])return C[c](a,inp);if(D.some(x=>x.n==c))return `[simulyator] '${c}' bu yerda to'liq ishlamaydi. Izoh: man ${c}. Haqiqiy Kali'da (ruxsatli muhitda) sinab ko'ring.`;return `zsh: command not found: ${c}`}
+function run(seg,inp){let red=null,m=seg.match(/^(.*?)\s*(>>?)\s*(\S+)\s*$/);if(m){seg=m[1];red=[m[2],m[3]]}const t=(seg.match(/"[^"]*"|'[^']*'|\S+/g)||[]).map(s=>/^(["']).*\1$/.test(s)?(s[0]=="'"?s.slice(1,-1).replace(/\$/g,"\u0001"):s.slice(1,-1)):s);if(!t.length)return '';const o=exec(t,inp);if(red){const[p,n]=par(red[1]);if(!p||p.t!='d')return `zsh: ${red[1]}: yozib bo'lmadi`;const old=red[0]=='>>'&&p.c[n]&&p.c[n].t=='f'?p.c[n].v:'';p.c[n]=f(old+o+'\n');return ''}return o}
+const out=$('#tout'),ti=$('#ti');
+function pr(s,cl){const e=document.createElement('div');if(cl)e.className=cl;e.textContent=s;out.appendChild(e);out.scrollTop=out.scrollHeight}
+function pline(cmd){const e=document.createElement('div');e.innerHTML=`<span class="pl">┌──(kali㉿kali)-[${esc(PS())}]\n└─$</span> ${esc(cmd)}`;out.appendChild(e)}
+function sub(line){const l=line.trim();pline(line);if(!l){return}HS.push(l);ti.value='';
+if(l=='clear'){out.innerHTML='';return}
+const ER=/command not found|topilmadi|yo'q|rad etildi|kerak$/;let o='',ok=true,op=';';const ps=l.split(/(&&|;)/);for(let i=0;i<ps.length;i+=2){if(i)op=ps[i-1];if(op=='&&'&&!ok)continue;const r=ps[i].split('|').reduce((x,s)=>run(s.trim(),x),'');ok=!ER.test(r);if(r)o+=(o?'\n':'')+r}
+if(o)pr(o,ER.test(o)?'er':'');
+const bare=l.replace(/^sudo\s+/,'');CH.forEach((c,i)=>{if(!S.c.includes(i)&&c[1].test(bare)){S.c.push(i);save();toast('Mashq bajarildi: '+c[0]);if(tab=='c')chal();prog()}});$('#pp').textContent='└─$ '+(cwd=='/home/kali'?'':PS()+' ');out.scrollTop=out.scrollHeight}
+let hi=0;
+ti.addEventListener('keydown',e=>{
+if(e.key=='Enter'){sub(ti.value);ti.value='';hi=HS.length}
+else if(e.key=='ArrowUp'){e.preventDefault();if(hi>0)hi--;ti.value=HS[hi]||''}
+else if(e.key=='ArrowDown'){e.preventDefault();if(hi<HS.length)hi++;ti.value=HS[hi]||''}
+else if(e.key=='l'&&e.ctrlKey){e.preventDefault();out.innerHTML=''}
+else if(e.key=='Tab'){e.preventDefault();const v=ti.value,w=v.split(/\s+/),last=w[w.length-1];let c=[];
+if(w.length==1)c=[...new Set([...Object.keys(C),...D.map(x=>x.n)])].filter(x=>x.startsWith(last));
+else{const i=last.lastIndexOf('/'),dir=last.slice(0,i+1)||'.',b=last.slice(i+1),n=node(dir);if(n&&n.t=='d')c=Object.keys(n.c).filter(k=>k.startsWith(b)).map(k=>last.slice(0,i+1)+k+(n.c[k].t=='d'?'/':''))}
+if(c.length==1){w[w.length-1]=c[0];ti.value=w.join(' ')+(c[0].endsWith('/')?'':' ')}else if(c.length>1)pr(c.map(x=>x.split('/').filter(Boolean).pop()).join('  '))}});
+$('#tsec').onclick=e=>{if(!getSelection().toString())ti.focus()};
+$('#clr').onclick=()=>{out.innerHTML=''};
+const TH=[['#0a0f1a','#cfe3ff'],['#050805','#7dff9b'],['#1b1b1f','#e6e6e6'],['#fdf6e3','#073642']],ts=$('#tsec');let tk=0,fz=13;
+$('#tt').onclick=()=>{tk=(tk+1)%TH.length;ts.style.setProperty('--tb',TH[tk][0]);ts.style.setProperty('--tf',TH[tk][1])};
+$('#fm').onclick=()=>{fz=Math.max(10,fz-1);ts.style.fontSize=fz+'px'};$('#fp').onclick=()=>{fz=Math.min(22,fz+1);ts.style.fontSize=fz+'px'};
+$('#cs').onclick=()=>copy(out.innerText);
+$('#ex').onclick=()=>copy(btoa(unescape(encodeURIComponent(JSON.stringify(S)))));
+$('#im').onclick=()=>{try{const v=prompt('Progress kodini kiriting:');if(v){S=Object.assign(S,JSON.parse(decodeURIComponent(escape(atob(v)))));save();show()}}catch(e){toast("Kod noto'g'ri")}};
+const gp=$('#gp'),mn=document.querySelector('main');gp.onpointerdown=e=>{gp.setPointerCapture(e.pointerId);gp.onpointermove=ev=>{const w=mn.getBoundingClientRect(),p=Math.min(75,Math.max(25,100*(ev.clientX-w.left)/w.width));mn.style.gridTemplateColumns=`minmax(0,${p}fr) 6px minmax(0,${100-p}fr)`}};gp.onpointerup=()=>{gp.onpointermove=null};
+pr("Kali Linux simulyatori (o'quv). 'help' yozing yoki chapdagi \"▶ Terminalda\" tugmasini bosing.\nBu haqiqiy tizim emas: hech narsa tarmoqqa chiqmaydi, fayllar faqat shu sahifada saqlanadi.\n");
+show();
+</script>
+<svg id="rbc" viewBox="0 0 22 22" aria-hidden="true"><path d="M2 2 L2 17 L6 13 L9 20 L12 19 L9 12 L15 12Z" fill="#fff" stroke="#000" stroke-width="1.4" stroke-linejoin="round"/></svg><div id="rb" role="img" aria-label="Robot o'qituvchi Kali-bot. Sudrab surish mumkin">
+<div id="rbb" class="rbb" role="status" aria-live="polite"></div>
+<div class="rbf"><svg viewBox="0 0 120 124" aria-hidden="true">
+<defs><linearGradient id="rh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#e6ebf3"/></linearGradient><linearGradient id="rgb2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b3d0f7"/><stop offset="1" stop-color="#6f9fe0"/></linearGradient><radialGradient id="rbl"><stop offset="0" stop-color="#ff5a5a" stop-opacity=".7"/><stop offset="1" stop-color="#ff5a5a" stop-opacity="0"/></radialGradient></defs>
+<ellipse cx="60" cy="112" rx="30" ry="22" fill="url(#rh)" stroke="#c9d0dc" stroke-width="2"/>
+<path d="M32 98 Q34 86 60 86 Q86 86 88 98 Q86 114 60 116 Q34 114 32 98Z" fill="url(#rgb2)" stroke="#8fb0e0" stroke-width="2"/>
+<circle cx="60" cy="100" r="6" style="fill:var(--cl,#7df3ff);filter:drop-shadow(0 0 4px var(--cl,#38d6ff));transition:fill .3s"/><path d="M54 110 L60 118 L66 110" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+<g data-ac="tie" style="display:none"><path d="M60 88 L49 82 V94Z M60 88 L71 82 V94Z" fill="#e4382e" stroke="#b82a22"/><circle cx="60" cy="88" r="3" fill="#b82a22"/></g><g id="rbH"><path class="an anl" d="M30 20 Q14 8 18 -10 Q34 -4 40 14Z" fill="url(#rgb2)" stroke="#8fb0e0" stroke-width="1.5"/><path class="an anr" d="M90 20 Q106 8 102 -10 Q86 -4 80 14Z" fill="url(#rgb2)" stroke="#8fb0e0" stroke-width="1.5"/>
+<circle class="em" cx="6" cy="48" r="11" fill="url(#rgb2)" stroke="#8fb0e0" stroke-width="2"/><circle class="em" cx="114" cy="48" r="11" fill="url(#rgb2)" stroke="#8fb0e0" stroke-width="2"/>
+<rect x="6" y="6" width="108" height="84" rx="36" fill="url(#rh)" stroke="#c9d0dc" stroke-width="2"/>
+<rect x="14" y="14" width="92" height="64" rx="28" fill="#05080f"/>
+<g id="rbE" fill="#7df3ff" stroke="#7df3ff" stroke-width="0" stroke-linecap="round" stroke-linejoin="round">
+<g class="e" data-e="tired" fill="none" stroke-width="3.5"><path d="M30 46 H50 A10 10 0 0 1 30 46Z" fill="#7df3ff" stroke="none"/><path d="M70 46 H90 A10 10 0 0 1 70 46Z" fill="#7df3ff" stroke="none"/><path d="M28 46 H52 M68 46 H92"/></g>
+<g class="e" data-e="sus" fill="none" stroke-width="4"><path d="M30 46 H50 A10 10 0 0 1 30 46Z" fill="#7df3ff" stroke="none"/><circle cx="80" cy="45" r="9" fill="#7df3ff" stroke="none"/><path d="M28 44 H52"/><path d="M68 28 L92 22"/></g>
+<g class="e" data-e="proud"><ellipse cx="40" cy="42" rx="8.5" ry="12"/><ellipse cx="80" cy="42" rx="8.5" ry="12"/><circle cx="37" cy="37" r="3" fill="#fff" stroke="none"/><circle cx="77" cy="37" r="3" fill="#fff" stroke="none"/></g>
+<g class="e" data-e="sick" fill="none" stroke-width="4.5"><path d="M30 42 Q40 50 50 42 M70 42 Q80 50 90 42"/><rect x="24" y="52" width="72" height="22" rx="9" fill="#d6ecff" stroke="#8fb8e8" stroke-width="1.5"/><path d="M30 60 H90 M30 66 H90" stroke="#9cc0ee" stroke-width="1.5"/></g>
+<g class="e" data-e="cry" fill="none" stroke-width="5"><path d="M30 50 Q40 34 50 50"/><path d="M70 50 Q80 34 90 50"/><path class="tr" d="M34 56 Q39 64 34 69 Q29 64 34 56Z" fill="#9fd4ff" stroke="none"/><path class="tr" style="animation-delay:.6s" d="M86 56 Q91 64 86 69 Q81 64 86 56Z" fill="#9fd4ff" stroke="none"/></g>
+<g class="e" data-e="hack" style="fill:#39ff14;stroke:#39ff14"><text id="hk1" x="40" y="55" font-size="30" font-weight="800" text-anchor="middle" stroke="none">1</text><text id="hk2" x="80" y="55" font-size="30" font-weight="800" text-anchor="middle" stroke="none">0</text></g>
+<g class="e" data-e="load" fill="none" stroke-width="5"><g transform="translate(60 45)"><g class="sp"><path d="M-14 0 A14 14 0 1 1 0 14"/></g></g></g>
+<g class="e" data-e="idle"><rect x="34" y="33" width="12" height="26" rx="4"/><rect x="74" y="33" width="12" height="26" rx="4"/></g>
+<g class="e" data-e="flat"><rect x="29" y="43" width="22" height="5" rx="2.5"/><rect x="69" y="43" width="22" height="5" rx="2.5"/></g>
+<g class="e" data-e="happy" fill="none" stroke-width="5"><path d="M31 54 L40 40 L49 54"/><path d="M71 54 L80 40 L89 54"/></g>
+<g class="e" data-e="love" fill="#ff4d6d"><g transform="translate(40 46)"><path class="pu" d="M0 11 C-19 -2 -10 -17 0 -6 C10 -17 19 -2 0 11Z"/></g><g transform="translate(80 46)"><path class="pu" d="M0 11 C-19 -2 -10 -17 0 -6 C10 -17 19 -2 0 11Z"/></g></g>
+<g class="e" data-e="star"><g transform="translate(40 45)"><path class="pu" d="M0-16 Q2-3 15 0 Q2 3 0 16 Q-2 3 -15 0 Q-2-3 0-16Z"/></g><g transform="translate(80 45)"><path class="pu" d="M0-16 Q2-3 15 0 Q2 3 0 16 Q-2 3 -15 0 Q-2-3 0-16Z"/></g></g>
+<g class="e" data-e="wow"><circle cx="40" cy="45" r="10"/><circle cx="80" cy="45" r="10"/></g>
+<g class="e" data-e="think"><rect x="31" y="43" width="18" height="5" rx="2.5"/><rect x="69" y="43" width="18" height="5" rx="2.5"/><text x="96" y="34" font-size="17" font-weight="800" stroke="none" text-anchor="middle">?</text></g>
+<g class="e" data-e="sleepy" fill="none" stroke-width="4.5"><path d="M30 46 Q40 55 50 46"/><path d="M70 46 Q80 55 90 46"/><text class="zz" x="96" y="32" font-size="14" font-weight="800" fill="#7df3ff" stroke="none">z</text><text class="zz" x="86" y="26" font-size="10" font-weight="800" fill="#7df3ff" stroke="none" style="animation-delay:1.2s">z</text></g>
+<g class="e" data-e="sad"><rect x="35" y="40" width="10" height="15" rx="4"/><rect x="75" y="40" width="10" height="15" rx="4"/><path d="M30 35 L49 29 M71 29 L90 35" fill="none" stroke-width="4"/><path class="tr" d="M48 58 Q53 65 48 69 Q43 65 48 58Z" fill="#9fd4ff"/></g>
+<g class="e" data-e="dizzy" fill="none" stroke-width="2.6"><g transform="translate(40 45)"><g class="sp"><path d="M0 0 m-2 0 a2 2 0 1 1 4 0 a4.5 4.5 0 1 1 -9 0 a7 7 0 1 1 14 0 a9.5 9.5 0 1 1 -19 0"/></g></g><g transform="translate(80 45)"><g class="sp"><path d="M0 0 m-2 0 a2 2 0 1 1 4 0 a4.5 4.5 0 1 1 -9 0 a7 7 0 1 1 14 0 a9.5 9.5 0 1 1 -19 0"/></g></g></g>
+<g class="e" data-e="squint" fill="none" stroke-width="5"><path d="M30 33 L50 45 L30 57"/><path d="M90 33 L70 45 L90 57"/></g>
+<g class="e" data-e="angry"><path d="M29 35 L52 46 Q52 58 40 58 Q29 55 29 35Z"/><path d="M91 35 L68 46 Q68 58 80 58 Q91 55 91 35Z"/></g>
+<g class="e" data-e="wink"><rect x="34" y="33" width="12" height="26" rx="4"/><path d="M90 33 L72 45 L90 57" fill="none" stroke-width="5"/></g>
+<g class="e" data-e="blush" fill="none" stroke-width="5"><path d="M30 52 Q40 36 50 52"/><path d="M70 52 Q80 36 90 52"/><ellipse cx="27" cy="62" rx="11" ry="6" fill="url(#rbl)" stroke="none"/><ellipse cx="93" cy="62" rx="11" ry="6" fill="url(#rbl)" stroke="none"/></g>
+<g class="e" data-e="money"><text x="40" y="57" font-size="34" font-weight="800" text-anchor="middle" stroke="none">$</text><text x="80" y="57" font-size="34" font-weight="800" text-anchor="middle" stroke="none">$</text></g>
+</g><g data-ac="hood" style="display:none"><path d="M2 52 Q0 -6 60 -8 Q120 -6 118 52 Q112 26 90 18 Q60 8 30 18 Q8 26 2 52Z" fill="#1c2430" stroke="#0e131b" stroke-width="2"/></g><g data-ac="hat" style="display:none"><path d="M26 14 Q60 -18 94 14Z" fill="#e4382e" stroke="#b82a22" stroke-width="2"/><rect x="24" y="12" width="72" height="6" rx="3" fill="#b82a22"/></g><g data-ac="glasses" style="display:none" fill="none" stroke="#f2b81c" stroke-width="3"><circle cx="40" cy="45" r="13"/><circle cx="80" cy="45" r="13"/><path d="M53 45 H67"/></g></g><g id="aL" class="arm"><g class="sw"><rect class="fg" x="-2.6" y="38" width="5.2" height="12" rx="2.6" fill="url(#rh)" stroke="#c9d0dc" stroke-width="1.4" style="display:none"/><rect x="-5" y="-3" width="10" height="36" rx="5" fill="url(#rgb2)" stroke="#8fb0e0" stroke-width="1.6"/><circle cy="34" r="7.5" fill="url(#rh)" stroke="#c9d0dc" stroke-width="1.6"/></g></g><g id="aR" class="arm"><g class="sw"><rect class="fg" x="-2.6" y="38" width="5.2" height="12" rx="2.6" fill="url(#rh)" stroke="#c9d0dc" stroke-width="1.4" style="display:none"/><rect x="-5" y="-3" width="10" height="36" rx="5" fill="url(#rgb2)" stroke="#8fb0e0" stroke-width="1.6"/><circle cy="34" r="7.5" fill="url(#rh)" stroke="#c9d0dc" stroke-width="1.6"/><g class="pr" style="transform:translate(0px,34px)">
+<g data-p="magnifier" style="display:none"><circle cx="0" cy="-17" r="9" fill="rgba(210,245,255,.35)" stroke="#7cc23c" stroke-width="3"/><path d="M0 -8 V5" stroke="#7cc23c" stroke-width="4" stroke-linecap="round"/></g>
+<g data-p="pencil" style="display:none"><g transform="rotate(28)"><rect x="-2.6" y="-22" width="5.2" height="22" fill="#f5b83d"/><path d="M-2.6 0 L2.6 0 L0 7Z" fill="#f3d5a5"/><path d="M-1 4.5 L1 4.5 L0 7Z" fill="#333"/><rect x="-2.6" y="-26" width="5.2" height="4" rx="1.5" fill="#f08a9a"/></g></g>
+<g data-p="trophy" style="display:none"><g transform="translate(0 -9)"><path d="M-8 -13 H8 V-5 Q8 4 0 5 Q-8 4 -8 -5Z" fill="#f2b81c" stroke="#c88a0a"/><rect x="-1.6" y="5" width="3.2" height="5" fill="#d99a0b"/><rect x="-6" y="10" width="12" height="4" rx="1.5" fill="#d99a0b"/><path d="M-8 -10 Q-14 -10 -11 -4 Q-9 0 -7 0 M8 -10 Q14 -10 11 -4 Q9 0 7 0" fill="none" stroke="#f2b81c" stroke-width="2"/></g></g>
+<g data-p="heart" style="display:none"><path d="M0 1 C-13 -9 -7 -22 0 -14 C7 -22 13 -9 0 1Z" fill="#ef3b4e"/></g>
+<g data-p="gift" style="display:none"><rect x="-9" y="-16" width="18" height="15" rx="1.5" fill="#e4382e"/><rect x="-2.2" y="-16" width="4.4" height="15" fill="#f6b93b"/><rect x="-9" y="-10" width="18" height="3.4" fill="#f6b93b"/><path d="M0 -16 Q-8 -24 -8 -17 Q-4 -16 0 -16 Q4 -16 8 -17 Q8 -24 0 -16Z" fill="#f6b93b"/></g>
+<g data-p="coins" style="display:none"><ellipse cx="0" cy="-2" rx="9" ry="3.5" fill="#f2b81c" stroke="#c88a0a"/><ellipse cx="0" cy="-6" rx="9" ry="3.5" fill="#f7c93a" stroke="#c88a0a"/><ellipse cx="0" cy="-10" rx="9" ry="3.5" fill="#f2b81c" stroke="#c88a0a"/></g>
+<g data-p="clock" style="display:none"><circle cx="0" cy="-12" r="10" fill="#fff" stroke="#566" stroke-width="2"/><path d="M0 -12 V-18 M0 -12 L5 -10" stroke="#222" stroke-width="2" stroke-linecap="round"/></g><g data-p="phone" style="display:none"><rect x="-7.5" y="-24" width="15" height="26" rx="3.5" fill="#1e2330" stroke="#566" stroke-width="1"/><rect x="-5.5" y="-21" width="11" height="18" rx="1.5" fill="#2e3a55"/></g>
+</g></g></g></svg></div></div>
+<script>
+(()=>{
+const rb=$('#rb'),bub=$('#rbb'),eg=$('#rbE'),eyes=[...rb.querySelectorAll('.e')],pick=a=>a[Math.floor(Math.random()*a.length)];
+let m='idle',mt,bt,x=0,y=0,vx=0,vy=0,drag=0,raf=0,mv=0,lt=0,last=Date.now(),hid=false;
+const W=()=>rb.offsetWidth,H=()=>rb.offsetHeight,KEY='kmsr';
+const clamp=()=>{x=Math.max(4,Math.min(innerWidth-W()-4,x));y=Math.max(4,Math.min(innerHeight-H()-4,y))};
+const put=()=>{rb.style.transform=`translate(${x}px,${y}px)`};
+let task=null,mad=0;
+const aL=$('#aL'),aR=$('#aR');
+const PZ={rest:[10,-10,3,3,2.6],rest0:[8,-8,0,0,1],wave:[10,-150,0,16,.45],clap:[-62,62,9,9,.3],cheer:[150,-150,12,12,.35],up:[125,-125,5,5,.5],think:[10,-165,0,6,.9],cheek:[-150,150,3,3,1.5],flail:[110,-110,28,28,.18],grab:[160,-160,10,10,.25],cross:[-95,95,2,2,.6],fume:[-95,95,7,7,.12],hi:[10,-100,0,8,.6],shy:[-125,125,6,6,.8],hold:[-60,60,2,2,1.4],trophy:[10,-140,0,5,.5],show:[10,-60,0,4,.8],write:[10,-60,0,9,.25],party:[150,-150,18,18,.25],shrug:[78,-78,5,5,.7],run:[100,-100,20,20,.2],hips:[38,-38,0,0,1],type:[-70,70,6,6,.15]};
+const PM={idle:'rest',flat:'rest',happy:'wave',love:'hold',star:'trophy',wow:'up',think:'think',sleepy:'rest0',sad:'cheek',dizzy:'flail',squint:'grab',angry:'fume',wink:'hi',blush:'hold',money:'hold',tired:'rest0',sus:'cross',proud:'hips',sick:'rest0',cry:'shy',hack:'type',load:'rest'};const CL={idle:'#7df3ff',flat:'#7df3ff',load:'#7df3ff',happy:'#5dff9d',wink:'#5dff9d',proud:'#5dff9d',star:'#ffd84d',wow:'#ffd84d',think:'#ffd84d',squint:'#ffd84d',money:'#ffd84d',sus:'#ffd84d',sleepy:'#4a7fa8',sad:'#6a8cff',dizzy:'#ff9d4d',tired:'#ffb04d',angry:'#ff4d5e',sick:'#ff4d5e',blush:'#ff7ac8',love:'#ff7ac8',cry:'#ff7ac8',hack:'#39ff14'},SN={happy:'ok',star:'ok',love:'ok',sad:'bad',dizzy:'bad',angry:'bad',wow:'up',sleepy:'z'};
+let ac;function snd(k){if(S.mute)return;try{const C=window.AudioContext||window.webkitAudioContext;ac=ac||new C();if(ac.state=='suspended')ac.resume();const z=k=='z',T={ok:[[660,0],[880,.09]],bad:[[220,0],[165,.12]],up:[[520,0],[780,.07]],z:[[110,0]]}[k];T.forEach(([f,d])=>{const o=ac.createOscillator(),g=ac.createGain();o.type=z?'sawtooth':'sine';o.frequency.value=f;o.connect(g);g.connect(ac.destination);const t=ac.currentTime+d;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(z?.02:.05,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+(z?.9:.18));o.start(t);o.stop(t+(z?1:.2))})}catch(e){}}
+const PP={love:'heart',blush:'gift',money:'coins',star:'trophy'};const prs=[...rb.querySelectorAll('.pr g[data-p]')],sv=rb.querySelector('svg');function prop(n){prs.forEach(g=>g.style.display=g.dataset.p==n?'':'none')}
+S.u=S.u||[];let qt=0,qs=0,errs=0,demoing=0,tyT,t0=Date.now(),gd=null,jumps=0,lastBlk=null,mx=innerWidth/2,my=innerHeight/2;
+const nx=()=>{const i=D.findIndex(x=>!S.l.includes(x.n));return i<0?D.length:i},lockd=i=>i>nx()+3&&!S.u.includes(D[i].n)&&!S.l.includes(D[i].n);window.nx=nx;window.lockd=lockd;
+function arm(a,th,amp,d,sg){a.style.transform=`translate(${sg>0?28:92}px,98px) rotate(${th}deg)`;const w=a.firstElementChild,pr=a.querySelector('.pr');if(pr)pr.style.transform=`translate(0px,34px) rotate(${-th}deg)`;w.style.animation=amp?`sg ${d}s ease-in-out infinite alternate`:'none';w.style.setProperty('--amp',amp);w.style.setProperty('--s',sg)}
+function pz(n,k){const p=PZ[n]||PZ.rest;if(!k)prop(null);rb.querySelectorAll('.fg').forEach(f=>f.style.display='none');arm(aL,p[0],p[2],p[4],1);arm(aR,p[1],p[3],p[4],-1)}
+function point(el,t,n='happy',ms=4200,pr,nh){if(hid||!el||!el.getClientRects().length)return;const r=el.getBoundingClientRect(),b=rb.getBoundingClientRect(),dx=r.left+r.width/2-(b.left+b.width/2),dy=r.top+r.height/2-(b.top+b.height*.8),th=Math.atan2(-dx,dy)*180/Math.PI,L=!pr&&dx<0;say(t,n,ms);arm(L?aL:aR,th,3,.35,L?1:-1);if(pr)prop(pr);else(L?aL:aR).querySelector('.fg').style.display='';if(!nh){el.classList.add('rbhl');setTimeout(()=>el.classList.remove('rbhl'),ms)}}
+function upset(t){mad++;shake();say(t,mad>=3?'angry':'sad',6500);if(mad<3)pz('cross')}
+const store=()=>{try{localStorage.setItem(KEY,JSON.stringify({x:x/innerWidth,y:y/innerHeight,h:hid}))}catch(e){}};
+function mood(n,ms){m=n;pz(PM[n]||"rest");if(PP[n])prop(PP[n]);rb.style.setProperty('--cl',CL[n]||'#7df3ff');rb.dataset.m=n;if(SN[n])snd(SN[n]);eyes.forEach(g=>g.style.display=g.dataset.e==n?'':'none');clearTimeout(mt);if(ms)mt=setTimeout(()=>mood('idle'),ms)}
+function say(t,n,ms=4200){if(hid)return;mood(n||'happy',ms);bub.textContent=t;bub.className='rbb '+(y>140?'up':'dn')+' '+(x>innerWidth/2?'r':'l')+' s';clearTimeout(bt);bt=setTimeout(()=>bub.classList.remove('s'),ms+600)}
+const emo=(n,ms=2200)=>{if(!hid)mood(n,ms)};
+const poke=()=>{last=Date.now();if(m=='sleepy')mood('idle')};
+function glide(){cancelAnimationFrame(raf);const f=()=>{x+=vx;y+=vy;vx*=.95;vy*=.95;if(x<4||x>innerWidth-W()-4)vx*=-.7;if(y<4||y>innerHeight-H()-4)vy*=-.7;clamp();put();if(Math.hypot(vx,vy)>.15)raf=requestAnimationFrame(f);else store()};raf=requestAnimationFrame(f)}
+try{const p=JSON.parse(localStorage.getItem(KEY)||'null');if(p){x=p.x*innerWidth;y=p.y*innerHeight;hid=!!p.h}else throw 0}catch(e){x=innerWidth-W()-14;y=innerHeight-H()-(innerWidth<=860?200:150)}
+clamp();put();rb.hidden=hid;mood('idle');
+rb.addEventListener('pointerdown',e=>{if(gd)endG();poke();drag=1;mv=0;vx=vy=0;cancelAnimationFrame(raf);rb.setPointerCapture(e.pointerId);rb.classList.add('g');mood('squint');bub.classList.remove('s');rb._ox=e.clientX-x;rb._oy=e.clientY-y;lt=Date.now()});
+rb.addEventListener('pointermove',e=>{if(!drag)return;const nx=e.clientX-rb._ox,ny=e.clientY-rb._oy;mv+=Math.abs(nx-x)+Math.abs(ny-y);vx=(nx-x)*.6+vx*.4;vy=(ny-y)*.6+vy*.4;x=nx;y=ny;clamp();put();lt=Date.now()});
+const up=()=>{if(!drag)return;drag=0;rb.classList.remove('g');if(Date.now()-lt>80)vx=vy=0;if(mv<6){vx=vy=0;const q=pick(D);if(task&&task.t=='ex'&&demo()){store();return}board(q.x[0]);say(pick([`Bilasizmi? ${q.n} — ${q.d}`,`Maslahat: ${q.n} buyrug'ini terminalda sinab ko'ring!`,`Men ${nm()}! Meni sudrab, uloqtirib ko'ring.`]),pick(['wow','star','happy']),5200)}else{mood(Math.hypot(vx,vy)>8?'dizzy':'happy',1600);glide()}store()};
+rb.addEventListener('pointerup',up);rb.addEventListener('pointercancel',up);
+addEventListener('pointermove',e=>{const r=rb.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),d=Math.hypot(dx,dy)||1,k=Math.min(1,d/300);eg.style.transform=`translate(${dx/d*k*4}px,${dy/d*k*3}px)`;sv.style.transform=`rotate(${dx/d*k*5}deg)`},{passive:true});
+addEventListener('keydown',poke);addEventListener('pointerdown',poke);
+addEventListener('resize',()=>{clamp();put()});
+setInterval(()=>{if(!hid&&!drag&&m=='idle'&&Date.now()-last>45000)mood('sleepy')},5000);
+setInterval(()=>{if(!hid&&!drag){vx=(Math.random()-.5)*6;vy=(Math.random()-.5)*6;glide()}},17000);
+const tg=document.createElement('button');tg.className='b';tg.id='rbt';tg.textContent='Robot';tg.title="Robotni ko'rsatish / yashirish";$('#th').before(tg);
+tg.onclick=()=>{if(!hid){say("Xayr! Kerak bo'lsam, 'Robot' tugmasini bosing.",'happy',1400);bow();setTimeout(()=>{hid=true;rb.hidden=true;store()},1500);return}hid=false;rb.hidden=false;store();clamp();put();say("Qaytdim! Savollaringiz bo'lsa, bosing.",'love')};
+/* terminal */
+const _sub=sub;
+sub=function(line){const b=S.c.length,n0=out.childElementCount;_sub(line);const l=(line||'').trim();if(!l)return;poke();if(task)task.at=Date.now();
+const err=[...out.children].slice(n0).some(e=>e.classList.contains('er'));
+if(/\brm\s+-\S*\s+\/(\s|\*|$)|\bdd\b.*of=\/dev\//.test(l))return say("Ehtiyot bo'ling! Haqiqiy tizimda bu hammasini o'chirib yuborardi!",'dizzy',5200);
+if(/^(sudo\s+)?nmap\s/.test(l)&&!/192\.168\.|127\.|localhost/.test(l))return say("To'xta! Ruxsatsiz skanerlash qonunga xilof. Faqat o'z laboratoriyangiz!",'angry',5600);
+if(task&&task.t=='ex'&&S.c.length==b&&++task.off%3==0)return upset(task.off>=6?"Hoy! Mashq bo'yicha yozing, boshqa narsa emas!":"Mashqni unutdingizmi? Boshqa buyruq yozayapsiz.");
+if(S.c.length>b){task=null;mad=0;return S.c.length==CH.length?dance("Barcha mashqlar bajarildi! Siz haqiqiy ustasiz!",'cry'):(say(pick(["Mashq bajarildi! Barakalla!","Zo'r! Yana bittasi hisobda.","Ajoyib ish!"]),pick(['love','star','proud']),4000),flip())}
+if(/^(sudo\s+)?(nmap|tcpdump|tshark|whatweb)\b/.test(l)&&!err)return say("Hakker rejimi yoqildi. Faqat o'z laboratoriyangizda!",'hack',3600);
+if(/^(sudo\s+)?(ping|traceroute|apt|curl|wget|mtr|dig)\b/.test(l)&&!err)return emo('load',1600);
+if(err&&++errs%3==0)return say("Hmm... ketma-ket xato. Sekinroq, imloni tekshiring.",'sus',4600);if(!err)errs=0;
+if(err){return Math.random()<.6?say(pick(["Xatolik bor. 'man buyruq' yordam beradi.","Imloni tekshiring, Tab tugmasi to'ldiradi.","Hech gap yo'q, xato qilib o'rganiladi!"]),pick(['think','sad','dizzy']),3800):emo('think')}
+Math.random()<.2?say(pick(["Yaxshi!","Toza ishlandi.","Davom eting!"]),pick(['happy','wink'])):emo(pick(['happy','wink','happy']))};
+ti.addEventListener('input',()=>{poke();if(task)task.at=Date.now();if(ti.value&&!hid){mood('flat',1800);pz('write',1);prop('pencil');rb.classList.add('ty');clearTimeout(tyT);tyT=setTimeout(()=>rb.classList.remove('ty'),1500)}});
+/* test, darslar, tablar */
+const _quiz=quiz;
+quiz=function(){_quiz();qt=Date.now();qs=0;if(Q&&Q.i<Q.qs.length){if(!task||task.t!='quiz')task={t:'quiz',off:0,at:Date.now()}}else if(task&&task.t=='quiz')task=null;if(Q&&Q.i>=Q.qs.length&&!Q.rb){Q.rb=1;setTimeout(chkAc,6000);const r=Q.s/Q.qs.length;r>=.8?(say(`${Q.s}/${Q.qs.length} — ajoyib natija!`,'love',5200),flip()):r>=.5?say("Yomon emas! Xatolarni takrorlang.",'blush',4600):(say("Darslarni qayta ko'rib chiqamiz, birga uddalaymiz!",r<.3?'sick':'sad',5000),jumps>0&&lastBlk&&setTimeout(()=>{say("Siz mavzulardan sakrab o'tgansiz. Sichqonchani men boshqaraman!",'angry',3000);setTimeout(()=>guide(nx(),lastBlk),1800)},5200))}};
+pane.addEventListener('click',e=>{const t=e.target.closest('.opt');if(!t||t.dataset.r)return;t.dataset.r=1;if(task)task.at=Date.now();if(t.classList.contains('ok'))say(pick(["To'g'ri!","Barakalla!","Aynan shunday!"]),pick(['happy','star','wink']),2400);else if(t.classList.contains('no'))say(pick(["Hechqisi yo'q, tushuntirishni o'qing.","Bu safar bo'lmadi. Keyingisi sizniki!"]),'sad',3200)});
+pane.addEventListener('change',e=>{if(e.target.dataset.l===undefined)return;poke();if(e.target.checked)S.l.length==D.length?say("Hamma buyruqlar o'rganildi! Siz daho ekansiz!",'money',6000):say(pick(["Rahmat, o'rgandingiz!","Yana bitta buyruq xaltangizda!"]),'blush',3000);else say("Takrorlab olamiz!",'think',2600)});
+const _show=show;let lt2=tab,ptm;
+const HI={q:()=>point(pane.querySelector('[data-qs]'),"Testni shu tugma bilan boshlang. Omad!",'wow',4200,'phone'),
+c:()=>{const e=pane.querySelector('.ch:not(.done)');if(e){task={t:'ex',off:0,at:Date.now()};point(e,"Mana vazifa! Buni bajaring.",'happy',3600,'pencil');ptm=setTimeout(()=>{if(tab=='c')point($('#ti'),"Buyruqni shu yerga yozing!",'happy',4200)},4000)}else say("Barcha mashqlar bajarilgan. Ustasiz!",'money',4000)},
+f:()=>point(pane.querySelector('.cm'),"Avval javobni o'ylab ko'ring!",'think',3600),
+l:()=>point($('#sq'),"Qidiring yoki ro'yxatdan buyruq tanlang.",'happy',3600,'magnifier')};
+show=function(){const pv=lt2;_show();if(tab==pv)return;lt2=tab;clearTimeout(ptm);
+if(pv=='c'&&task&&task.t=='ex'){task=null;upset("Mashq tugamadi-ku, qayerga ketdingiz?")}
+else if(pv=='q'&&Q&&Q.i>0&&Q.i<Q.qs.length){task=null;upset("Testni tashlab ketdingizmi?")}
+else HI[tab]()};
+setTimeout(()=>(bow(),S.st&&S.st.n>=7&&S.st.n%7==0?dance(`${greet()}, ${nm()}! ${S.st.n} kun ketma-ket!`,'love'):S.st&&S.st.n>=3?say(`${greet()}, ${nm()}! ${S.st.n} kun ketma-ket, zo'r!`,'love',5600):say(`${greet()}! Men ${nm()}, o'qituvchingizman. Meni sudrab istalgan joyga olib boring!`,'happy',6000)),700);
+
+/* bloklash va yo'naltirish */
+function markLocks(){const L=$('#list');if(!L||tab!='l')return;L.querySelectorAll('.cm').forEach(c=>{const k=c.querySelector('[data-l]');if(!k)return;const i=D.findIndex(x=>x.n==k.dataset.l),lk=i>=0&&lockd(i);c.classList.toggle('lk',lk);c.querySelectorAll('input,button').forEach(b=>b.disabled=lk);c.title=lk?`Yopiq: avval '${D[nx()].n}' ni o'rganing`:''})}
+const _list=list;list=function(){_list();markLocks()};
+const _prog=prog;prog=function(){_prog();markLocks();chkAc()};
+const cardEl=nm=>{const q=()=>pane.querySelector(`[data-l="${CSS.escape(nm)}"]`);let e=q();if(!e){cat='Hammasi';qry='';lessons();e=q()}return e&&e.closest('.cm')};
+function endG(){const g=gd;gd=null;if(g)clearTimeout(g.to);document.body.classList.remove('rbg');$('#rbc').style.display='none';document.querySelectorAll('.rbhl').forEach(e=>e.classList.remove('rbhl'))}
+function fly(tx,ty,ms,fr,cb){cancelAnimationFrame(raf);tx=Math.max(4,Math.min(innerWidth-W()-4,tx));ty=Math.max(4,Math.min(innerHeight-H()-4,ty));const x0=x,y0=y,t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/ms),e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;x=x0+(tx-x0)*e;y=y0+(ty-y0)*e;put();fr&&fr();if(k<1)raf=requestAnimationFrame(f);else{store();cb&&cb()}};raf=requestAnimationFrame(f)}
+function lead(el,t,cb){const r=el.getBoundingClientRect(),sc=W()/120,a=sc*111.5,b=sc*125.8,c=$('#rbc');
+if(matchMedia('(pointer:coarse)').matches){gd.steps.forEach(s=>s.need='click');say(t,'wow',2500);fly(r.right-W()-8,r.top-H()*.7,900,0,cb);return}
+const hp=()=>{c.style.transform=`translate(${x+a}px,${y+b}px)`},hold=()=>arm(aR,-35,2,.5,-1);
+document.body.classList.add('rbg');c.style.display='block';c.style.transform=`translate(${mx}px,${my}px)`;
+say("Sichqonchani men ushlab olaman!",'wow',3200);hold();
+fly(mx-a,my-b,700,0,()=>{say("Yuring, men ko'rsataman!",'squint',2400);hold();fly(r.left+Math.min(60,r.width/3)-a,r.top+r.height/2-b,1400,hp,()=>{hp();setTimeout(()=>{c.style.display='none';document.body.classList.remove('rbg');cb()},700)})})}
+function stepGo(){const g=gd;if(!g)return;const s=g.steps[g.i],el=s.f();if(!el)return endG();s.el=el;el.scrollIntoView({block:'center'});lead(el,s.t,()=>{if(gd!==g)return;g.wait=true;point(el,s.t,'happy',20000,s.card?'magnifier':null)})}
+function stepDone(){const g=gd;if(!g||!g.wait)return;g.wait=false;g.steps[g.i].el.classList.remove('rbhl');g.i++;mood('happy',1200);if(g.i<g.steps.length)setTimeout(stepGo,600);else{endG();unlock(g)}}
+function unlock(g){if(g.att&&!S.u.includes(g.att)){S.u.push(g.att);save()}markLocks();mad=0;say(`🔓 Ochildi! Endi ${g.att||'testlar'} ishlaydi.`,'love',5600);prop('gift')}
+function guide(idx,att){if(gd||hid||idx>=D.length)return;const g={i:0,att,steps:[]};if(tab!='l')g.steps.push({need:'click',t:"Avval 'Darslar' bo'limiga o'ting.",f:()=>$('.tabs [data-t=l]')});g.steps.push({need:'hover',card:1,t:`Shu yerdan boshlang: ${D[idx].n}`,f:()=>cardEl(D[idx].n)});g.to=setTimeout(()=>{if(gd===g)endG()},45000);gd=g;stepGo()}
+function blocked(nm){if(gd||hid)return;jumps++;lastBlk=nm;shake();say("🔒 Bu mavzu yopiq: 3 tadan ko'p sakrab o'tdingiz. Sichqonchani men boshqaraman!",'angry',3200);setTimeout(()=>guide(nx(),nm),1800)}
+pane.addEventListener('click',e=>{const c=e.target.closest('.cm.lk');if(c){const k=c.querySelector('[data-l]');k&&blocked(k.dataset.l)}});
+addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;if(gd&&gd.wait){const s=gd.steps[gd.i],r=s.el.getBoundingClientRect();if(s.need=='hover'&&mx>=r.left&&mx<=r.right&&my>=r.top&&my<=r.bottom)stepDone()}},{passive:true});
+document.addEventListener('click',e=>{if(gd&&gd.wait&&gd.steps[gd.i].el.contains(e.target))stepDone()},true);
+/* sichqoncha ustiga borsa tushuntiradi */
+let hv,hvT;
+pane.addEventListener('pointerover',e=>{const c=e.target.closest('.cm,.ch');if(!c||c===hv)return;hv=c;clearTimeout(hvT);if(c.classList.contains('lk')||gd||drag||hid)return;hvT=setTimeout(()=>{if(!c.matches(':hover')||bub.classList.contains('s'))return;const k=c.querySelector('[data-l]'),d=k&&D.find(x=>x.n==k.dataset.l);if(d){point(c,`${d.n}: ${d.d}`,'happy',5200,'magnifier',1);board(d.x[0])}else if(c.classList.contains('ch'))point(c,"Kerak bo'lsa, 'Maslahat' tugmasini bosing!",'think',3600,'pencil',1)},1300)});
+pane.addEventListener('pointerout',e=>{if(hv&&!(e.relatedTarget&&hv.contains(e.relatedTarget))){hv=null;clearTimeout(hvT)}});
+markLocks();
+
+/* harakatlar */
+const act=(c,ms=1500)=>{rb.classList.add(c);setTimeout(()=>rb.classList.remove(c),ms)},nod=()=>act('nod'),shake=()=>act('shk',1300),flip=()=>act('fl',950),bow=()=>act('bw',1700),dance=(t,n)=>{say(t||"Raqsga tushamiz! 🎉",n||'happy',4200);pz('party',1);act('dc',4200)};
+const nm=()=>S.nm||'Kali-bot',greet=()=>{const h=new Date().getHours();return h<5?'Xayrli tun':h<12?'Xayrli tong':h<18?'Xayrli kun':'Xayrli kech'};
+pane.addEventListener('click',e=>{const t=e.target.closest('.opt');if(t&&!t.dataset.r2){t.dataset.r2=1;t.classList.contains('ok')?nod():t.classList.contains('no')&&shake()}const c=e.target.dataset.cat;if(c&&c.startsWith('Pentest'))say("Hakker rejimi! Faqat o'z laboratoriyangizda.",'hack',3600)});
+/* doska va demo */
+const bd=document.createElement('div');bd.className='rbd';rb.appendChild(bd);
+function board(ex){if(hid||!ex)return;const[c,n]=ex,tk=c.match(/"[^"]*"|'[^']*'|\S+/g)||[];bd.innerHTML=tk.map((t,i)=>{const k=i==0?['b','buyruq']:t[0]=='-'?['o','parametr']:/^(\||>>?|&&)$/.test(t)?['p',"bog'lovchi"]:['g','argument'];return `<span class="tk ${k[0]}" style="animation-delay:${i*.45}s"><code>${esc(t)}</code><i>${k[1]}</i></span>`}).join('')+`<div class="mu">${esc(n)}</div>`;bd.className='rbd s '+(bub.classList.contains('up')?'dn':'up')+' '+(bub.classList.contains('r')?'r':'l');clearTimeout(bd._t);bd._t=setTimeout(()=>bd.classList.remove('s'),7000)}
+function demo(){const i=CH.findIndex((c,j)=>!S.c.includes(j));if(i<0||demoing)return false;demoing=1;const c=CH[i][2];document.body.dataset.v='t';ti.value='';rb.classList.add('ty');point($('#ti'),"Qarang, men yozaman:",'happy',3200,'pencil',1);let k=0;const t=setInterval(()=>{ti.value=c.slice(0,++k);if(k>=c.length){clearInterval(t);demoing=0;rb.classList.remove('ty');say("Endi Enter bosing, o'zingiz urinib ko'ring!",'wink',4600);ti.focus()}},90);return true}
+/* shaxsiylashtirish */
+const DK="Ko'k",COLS={"Ko'k":['#b3d0f7','#6f9fe0'],'Yashil':['#b7f0c8','#4fbf7a'],'Pushti':['#f9c4dd','#e0699f'],"To'q ko'k":['#9db4e8','#3d58b0']};
+const ACS=[['hat','Kepka',()=>S.l.length>=5,'5 ta mavzu'],['glasses',"Ko'zoynak",()=>S.l.length>=10,'10 ta mavzu'],['tie','Galstuk',()=>S.q>0,'1 ta test'],['hood','Hakker kapyushoni',()=>S.c.length>=5,'5 ta mashq']];
+S.rba=S.rba||[];S.rbk=S.rbk||[];
+function applyLook(){const st=document.getElementById('rgb2').querySelectorAll('stop'),c=COLS[S.rbcn]||COLS[DK];st[0].setAttribute('stop-color',c[0]);st[1].setAttribute('stop-color',c[1]);rb.querySelectorAll('[data-ac]').forEach(a=>a.style.display=S.rba.includes(a.dataset.ac)?'':'none')}
+function chkAc(q){ACS.forEach(a=>{if(a[2]()&&!S.rbk.includes(a[0])){S.rbk.push(a[0]);save();if(!q){say(`Yangi aksessuar ochildi: ${a[1]}! 'Robot ⚙' dan kiyib ko'ring.`,'love',5600);prop('gift')}}})}
+const pn=document.createElement('div');pn.id='rbp';pn.hidden=true;document.body.appendChild(pn);
+function panel(){pn.innerHTML=`<b>Robot sozlamalari</b><label class="mu">Ismi<input id="rbn" class="in" maxlength="14" value="${esc(nm())}"></label><div class="mu">Rangi</div><div class="rbsw">${Object.keys(COLS).map(k=>`<button class="b${(S.rbcn||DK)==k?' on':''}" data-c="${esc(k)}">${esc(k)}</button>`).join('')}</div><div class="mu">Aksessuarlar</div>${ACS.map(a=>{const u=a[2]();return `<label class="mu"><input type="checkbox" data-a="${a[0]}" ${u?'':'disabled'} ${S.rba.includes(a[0])?'checked':''}> ${a[1]}${u?'':' 🔒 '+a[3]}</label>`}).join('')}<label class="mu"><input type="checkbox" id="rbsn" ${S.mute?'':'checked'}> Ovoz</label>`}
+pn.addEventListener('input',e=>{if(e.target.id=='rbn'){S.nm=e.target.value.trim().slice(0,14);save()}});
+pn.addEventListener('change',e=>{const t=e.target;if(t.dataset.a){S.rba=t.checked?[...S.rba,t.dataset.a]:S.rba.filter(x=>x!=t.dataset.a);save();applyLook();t.checked&&say('Yarashibdi!','blush',2400)}else if(t.id=='rbsn'){S.mute=!t.checked;save()}});
+pn.addEventListener('click',e=>{const k=e.target.dataset.c;if(k){S.rbcn=k;save();applyLook();panel()}});
+const sb=document.createElement('button');sb.className='b';sb.textContent='Robot ⚙';$('#rbt').before(sb);sb.onclick=()=>{pn.hidden=!pn.hidden;if(!pn.hidden)panel()};
+/* jonli bo'lish */
+setInterval(()=>{if(m=='hack'){$('#hk1').textContent=Math.random()<.5?'1':'0';$('#hk2').textContent=Math.random()<.5?'1':'0'}},150);
+setInterval(()=>{if(m!='idle'||drag||hid||gd||bub.classList.contains('s'))return;const r=Math.random();r<.3?emo('wink',650):r<.5?emo('wow',500):r<.7&&nod()},7000);
+setInterval(()=>{if(hid||drag||gd)return;if(tab=='q'&&Q&&Q.i<Q.qs.length&&!Q.d){const d=Date.now()-qt;if(d>10000&&qs<1){qs=1;say("Vaqt ketyapti!",'think',3500);pz('show',1);prop('clock')}else if(d>25000&&qs<2){qs=2;say("Qiyinmi? Taxmin qilib ko'ring.",'think',4200);pz('shrug',1)}}
+if(task&&m=='idle'&&!task.fit&&Date.now()-task.at>20000){task.fit=1;say("Kutib turib mashq qilaman 💪",'wink',4500);act('fit',4500);pz('run',1)}
+if(Date.now()-t0>25*60000){t0=Date.now();say("Charchamadingizmi? 5 daqiqa dam oling.",'tired',6500)}},2000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-last>90000&&!hid)say('Qaytdingiz! Davom etamizmi?','happy',3500)});
+applyLook();chkAc(1);
+setTimeout(()=>point($('#ti'),"Buyruqlar shu terminalda ishlaydi. Sinab ko'ring!",'happy',5200),8000);
+['tt','fm','fp','th','clr','cs'].forEach(i=>{const b=$('#'+i);b&&b.addEventListener('click',()=>{if(task&&++task.off%3==0)upset("Vazifa o'rniga sozlamalar bilan o'ynayapsizmi?")})});
+setInterval(()=>{if(!task||hid||drag||Date.now()-task.at<40000)return;task.at=Date.now();upset(task.t=='ex'?"Hoy, vazifa kutyapti! Terminalga qarang.":"Test kutyapti, javob bering!");setTimeout(()=>task&&point(task.t=='ex'?$('#ti'):pane.querySelector('.opt'),"Mana shu yerga!",mad>=3?'angry':'sad',2600),1300)},5000);
+})();
+/* KMS Plus: profil, XP, yutuqlar, zaxira, terminal tavsiyalari */
+(function(){
+const q=s=>document.querySelector(s),K='kms_plus_profile_v1';let P={name:'',xp:0,goal:3,days:[],daily:{},lastDate:'',best:0,streak:0};try{P=Object.assign(P,JSON.parse(localStorage.getItem(K)||'{}'))}catch(e){}
+const date=()=>new Date().toLocaleDateString('sv-SE');function saveP(){try{localStorage.setItem(K,JSON.stringify(P))}catch(e){toast('Xotira to‘ldi. JSON zaxira oling.')}}
+function activity(n=1){const d=date();P.daily=P.daily||{};P.days=P.days||[];if(P.lastDate!==d){const z=new Date();z.setDate(z.getDate()-1);P.streak=P.lastDate===z.toLocaleDateString('sv-SE')?(P.streak||0)+1:1;P.lastDate=d;P.days.push(d);P.days=[...new Set(P.days)].slice(-400)}P.daily[d]=(P.daily[d]||0)+n;P.xp=(P.xp||0)+n*10;saveP();render()}
+function badges(){let n=(S.l||[]).length,c=(S.c||[]).length,x=P.xp||0;return[['🌱','Birinchi qadam',n+c>=1],['📚','5 dars',n>=5],['🧠','Testchi',S.q>=8],['🛠️','Birinchi mashq',c>=1],['🔥','3 kunlik seriya',(P.streak||0)>=3],['🏆','100 XP',x>=100],['🎯','20 faoliyat',n+c>=20],['👑','50 dars',n>=50]]}
+function render(){let n=(S.l||[]).length+(S.c||[]).length,today=((P.daily||{})[date()]||0),goal=Number(P.goal||3),total=D.length+CH.length;const vals={'kmx-xp':`${P.xp||0} XP`,'kmx-level':String(1+Math.floor((P.xp||0)/100)),'kmx-streak':`${P.streak||0} kun`,'kmx-done':String(n),'kmx-best':`${Math.max(P.best||0,S.q||0)}/15`,'kmx-percent':`${Math.min(100,Math.round(n/total*100))}%`,'kmx-goaltext':`${Math.min(today,goal)}/${goal} · ${today>=goal?'Maqsad bajarildi!':'davom eting'}`};Object.entries(vals).forEach(([id,v])=>{if(q('#'+id))q('#'+id).textContent=v});if(q('#kmx-goalbar'))q('#kmx-goalbar').style.width=Math.min(100,today/goal*100)+'%';if(q('#kmx-badges'))q('#kmx-badges').innerHTML=badges().map(([i,t,ok])=>`<span class="kmx-badge ${ok?'':'locked'}">${i} ${t} ${ok?'✓':'🔒'}</span>`).join('');if(q('#kmx-name')&&document.activeElement!==q('#kmx-name'))q('#kmx-name').value=P.name||'';if(q('#kmx-goal'))q('#kmx-goal').value=String(P.goal||3)}
+const ov=q('#kmx-overlay');function open(){render();ov.classList.add('open');ov.setAttribute('aria-hidden','false')}function close(){ov.classList.remove('open');ov.setAttribute('aria-hidden','true')}q('#profileBtn')?.addEventListener('click',open);q('#kmx-close')?.addEventListener('click',close);ov?.addEventListener('click',e=>{if(e.target===ov)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});q('#kmx-name')?.addEventListener('change',e=>{P.name=e.target.value.trim().slice(0,32);saveP();toast('Profil saqlandi')});q('#kmx-goal')?.addEventListener('change',e=>{P.goal=+e.target.value||3;saveP();render()});
+q('#kmx-export')?.addEventListener('click',()=>{const b=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),progress:S,profile:P},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='kali-terminal-maktabi-zaxira.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});q('#kmx-import')?.addEventListener('click',()=>q('#kmx-file').click());q('#kmx-file')?.addEventListener('change',async e=>{try{const j=JSON.parse(await e.target.files[0].text()),v=j.progress||j;if(!Array.isArray(v.l)||!Array.isArray(v.c))throw 0;if(confirm('Zaxira joriy progressni almashtirsinmi?')){S=Object.assign(S,v);if(j.profile)P=Object.assign(P,j.profile);save();saveP();show();render();toast('Zaxira tiklandi')}}catch(_){toast('JSON zaxira fayli noto‘g‘ri')}e.target.value=''});q('#kmx-reset')?.addEventListener('click',()=>{if(confirm('Barcha dars, test va profil progressi o‘chirilsinmi?')){S={l:[],q:0,c:[]};P={name:P.name||'',xp:0,goal:P.goal||3,days:[],daily:{},lastDate:'',best:0,streak:0};save();saveP();show();render()}});
+/* Dars belgilanishi, test va mashq progressini XPga aylantirish */
+let prevC=JSON.stringify(S.c),prevL=JSON.stringify(S.l),prevQ=S.q;setInterval(()=>{let c=JSON.stringify(S.c),l=JSON.stringify(S.l);if(c!==prevC){let a=JSON.parse(c),b=JSON.parse(prevC);if(a.length>b.length)activity(a.length-b.length);prevC=c}if(l!==prevL){let a=JSON.parse(l),b=JSON.parse(prevL);if(a.length>b.length)activity(a.length-b.length);prevL=l}if(S.q>prevQ){P.best=Math.max(P.best||0,S.q);saveP();render();prevQ=S.q}},1000);
+/* Buyruqni avtomatik to‘ldirish: Tab */
+const ti=q('#ti'),sg=document.createElement('div');sg.id='kmx-suggest';document.body.appendChild(sg);const cmds=['pwd','ls','ls -la','cd','cd ..','cd ~','mkdir','touch','cat','cp','mv','rm','echo','grep','find','history','clear','man','whoami','id','uname -a','ip addr','ip -br addr','ping -c 4 192.168.56.1','chmod 600 notes.txt','ps','top','df -h','free -h','sudo systemctl status tor@default','nmap -sT -p 22,80 192.168.56.101'];let matches=[];function suggest(){let v=ti.value.trim().toLowerCase();if(!v){sg.style.display='none';return}matches=cmds.filter(c=>c.toLowerCase().startsWith(v)&&c!==v).slice(0,7);if(!matches.length){sg.style.display='none';return}let r=ti.getBoundingClientRect();sg.style.left=Math.max(6,r.left)+'px';sg.style.top=Math.min(innerHeight-190,r.bottom+4)+'px';sg.style.width=Math.min(Math.max(r.width,220),innerWidth-12)+'px';sg.innerHTML=matches.map((c,i)=>`<button type="button" data-sug="${i}">${c}</button>`).join('');sg.style.display='block'}ti?.addEventListener('input',suggest);ti?.addEventListener('focus',suggest);ti?.addEventListener('keydown',e=>{if(e.key==='Tab'&&matches.length){e.preventDefault();ti.value=matches[0];sg.style.display='none'}if(e.key==='Escape')sg.style.display='none';if(e.key==='Enter')sg.style.display='none'});sg.addEventListener('mousedown',e=>{let b=e.target.closest('[data-sug]');if(!b)return;e.preventDefault();ti.value=matches[+b.dataset.sug]||'';sg.style.display='none';ti.focus()});document.addEventListener('click',e=>{if(!sg.contains(e.target)&&e.target!==ti)sg.style.display='none'});
+/* Terminal xatolariga qisqa izoh */
+const out=q('#tout');if(out)new MutationObserver(()=>{let last=out.lastElementChild;if(!last||last.dataset.kmxExplained)return;let t=(last.innerText||'').toLowerCase(),m='';if(/command not found|buyruq topilmadi|not found/.test(t))m='Buyruq nomini tekshiring. man buyruq yordam beradi.';else if(/permission denied|ruxsat yo‘q/.test(t))m='Ruxsatlarni ls -l bilan tekshiring. Buyruqni tushunmasdan sudo ishlatmang.';else if(/no such file|bunday fayl/.test(t))m='pwd bilan joriy joyni, ls bilan fayllarni tekshiring. Harflarning katta-kichikligi muhim.';else if(/syntax error|usage:/.test(t))m='Parametrlarni tekshiring; man buyruq yordam beradi.';if(m){last.dataset.kmxExplained='1';let h=document.createElement('div');h.className='kmx-help';h.textContent='💡 '+m;last.appendChild(h)}}).observe(out,{childList:true,subtree:true});const status=document.createElement('span');status.className='mu';status.textContent='● Lokal rejim';status.title='Progress ushbu brauzerda saqlanadi';q('.hd')?.appendChild(status);render();
+})();
+
+</script>
+<nav id="mnav" aria-label="Bo'limlar"><button data-v="l" class="on"><span>📚</span>Darslar</button><button data-v="t"><span>💻</span>Terminal</button></nav>
+<script>
+(()=>{
+const b=document.body,nav=document.getElementById('mnav'),ti=document.getElementById('ti');
+const sync=()=>nav.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.v===b.dataset.v));
+nav.onclick=e=>{const x=e.target.closest('button');if(!x)return;b.dataset.v=x.dataset.v;if(x.dataset.v==='t')setTimeout(()=>ti.focus(),50)};
+new MutationObserver(sync).observe(b,{attributes:true,attributeFilter:['data-v']});sync();
+const qk=document.createElement('div');qk.id='qk';
+[['Tab','Tab'],['↑','ArrowUp'],['↓','ArrowDown'],['|','|'],['>','> '],['>>','>> '],['&&',' && '],['-','-'],['/','/'],['~','~/'],['..','../'],['Ctrl+L','L']].forEach(([l,v])=>{const k=document.createElement('button');k.type='button';k.textContent=l;k.dataset.k=v;qk.appendChild(k)});
+document.querySelector('.inl').before(qk);
+qk.addEventListener('pointerdown',e=>e.preventDefault());
+qk.addEventListener('click',e=>{const k=e.target.dataset.k;if(!k)return;ti.focus();
+if(k==='Tab'||k==='ArrowUp'||k==='ArrowDown')ti.dispatchEvent(new KeyboardEvent('keydown',{key:k,bubbles:true,cancelable:true}));
+else if(k==='L')ti.dispatchEvent(new KeyboardEvent('keydown',{key:'l',ctrlKey:true,bubbles:true,cancelable:true}));
+else{const s=ti.selectionStart??ti.value.length,t=ti.selectionEnd??s;ti.setRangeText(k,s,t,'end');ti.dispatchEvent(new Event('input',{bubbles:true}))}});
+const vv=window.visualViewport;
+if(vv){const f=()=>{if(innerWidth<=860){b.style.height=vv.height+'px';scrollTo(0,0)}else b.style.height=''};vv.addEventListener('resize',f);vv.addEventListener('scroll',f);addEventListener('orientationchange',f)}
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+})();
+</script>
+<script src="plus.js"></script><script src="plus2.js"></script>
+</body>
+</html>

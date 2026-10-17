@@ -1,0 +1,21 @@
+{
+  "_izoh": "default = ilovaning asosiy nomi va ikonkasi. presets = ilova ichidan 'Asosiy ikonkani almashtirish' bilan tanlanadigan variantlar. id faqat a-z, 0-9, _ bo'lsin. icon yo'li www/ papkasiga nisbatan. Ikonka (rasm) ilova ichidagi 'icons/p0..p14.jpg' bilan bir xil tartibda bo'lishi kerak.",
+  "default": { "label": "Kali Maktab", "icon": "icon-512.png" },
+  "presets": [
+    { "id": "p0",  "label": "Kali",      "icon": "icons/p0.jpg" },
+    { "id": "p1",  "label": "Ajdaho",    "icon": "icons/p1.jpg" },
+    { "id": "p2",  "label": "O'yinlar",  "icon": "icons/p2.jpg" },
+    { "id": "p3",  "label": "Video",     "icon": "icons/p3.jpg" },
+    { "id": "p4",  "label": "Kod",       "icon": "icons/p4.jpg" },
+    { "id": "p5",  "label": "Buyruq",    "icon": "icons/p5.jpg" },
+    { "id": "p6",  "label": "Sayyora",   "icon": "icons/p6.jpg" },
+    { "id": "p7",  "label": "Chaqmoq",   "icon": "icons/p7.jpg" },
+    { "id": "p8",  "label": "CodeHub",   "icon": "icons/p8.jpg" },
+    { "id": "p9",  "label": "Robot",     "icon": "icons/p9.jpg" },
+    { "id": "p10", "label": "Offline",   "icon": "icons/p10.jpg" },
+    { "id": "p11", "label": "Jangchi",   "icon": "icons/p11.jpg" },
+    { "id": "p12", "label": "Soya",      "icon": "icons/p12.jpg" },
+    { "id": "p13", "label": "Eskiz",     "icon": "icons/p13.jpg" },
+    { "id": "p14", "label": "Kuch",      "icon": "icons/p14.jpg" }
+  ]
+}
